@@ -1,5 +1,5 @@
 {
-    "name": "@pigeonhole/render",
+    "name": "@pigeonhole/server",
     "version": "0.0.0",
     "private": true,
     "description": "",
@@ -14,14 +14,11 @@
         "test": "pnpm vitest run"
     },
     "dependencies": {
-        "@markdoc/markdoc": "^0.5.4"
+        "@pigeonhole/markdoc": "workspace:*",
+        "@pigeonhole/render": "workspace:*"
     },
     "devDependencies": {
-        "jsdom": "^26.1.0",
         "vitest": "^4.0.18"
     },
-    "packageManager": "pnpm@10.28.1",
-    "exports": {
-        ".": "./src/index.ts"
-    }
+    "packageManager": "pnpm@10.28.1"
 }

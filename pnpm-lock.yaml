@@ -35,13 +35,27 @@ importers:
         version: 4.0.18(@types/node@25.2.3)(jsdom@26.1.0)
 
   packages/render:
-    devDependencies:
+    dependencies:
       '@markdoc/markdoc':
         specifier: ^0.5.4
         version: 0.5.4
+    devDependencies:
       jsdom:
         specifier: ^26.1.0
         version: 26.1.0
+      vitest:
+        specifier: ^4.0.18
+        version: 4.0.18(@types/node@25.2.3)(jsdom@26.1.0)
+
+  packages/server:
+    dependencies:
+      '@pigeonhole/markdoc':
+        specifier: workspace:*
+        version: link:../markdoc
+      '@pigeonhole/render':
+        specifier: workspace:*
+        version: link:../render
+    devDependencies:
       vitest:
         specifier: ^4.0.18
         version: 4.0.18(@types/node@25.2.3)(jsdom@26.1.0)
