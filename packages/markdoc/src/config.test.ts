@@ -35,10 +35,7 @@ test("inputsがvariablesに含まれる", () => {
     const ast = parse(source)
     const config = buildConfig(ast)
     assert.deepEqual(config.variables, {
-        inputs: [
-            { variableName: "user" },
-            { variableName: "posts" },
-        ],
+        inputs: [{ variableName: "user" }, { variableName: "posts" }],
     })
 })
 
