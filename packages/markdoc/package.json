@@ -1,0 +1,26 @@
+{
+    "name": "@pigeonhole/markdoc",
+    "version": "0.0.0",
+    "private": true,
+    "description": "",
+    "keywords": [],
+    "license": "MIT",
+    "author": "",
+    "scripts": {
+        "lint": "oxlint .",
+        "lint:fix": "oxlint --fix .",
+        "fmt:check": "oxfmt .",
+        "fmt": "oxfmt --write .",
+        "typecheck": "pnpm -r run typecheck",
+        "test": "pnpm vitest run"
+    },
+    "dependencies": {
+        "@markdoc/markdoc": "^0.5.4",
+        "js-yaml": "^4.1.1"
+    },
+    "devDependencies": {
+        "@types/js-yaml": "^4.0.9",
+        "vitest": "^4.0.18"
+    },
+    "packageManager": "pnpm@10.28.1"
+}
