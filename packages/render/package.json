@@ -6,11 +6,15 @@
     "keywords": [],
     "license": "MIT",
     "author": "",
+    "exports": {
+        ".": "./src/index.ts"
+    },
     "scripts": {
         "lint": "oxlint .",
         "lint:fix": "oxlint --fix .",
         "fmt:check": "oxfmt .",
         "fmt": "oxfmt --write .",
+        "typecheck": "tsc --noEmit",
         "test": "pnpm vitest run"
     },
     "dependencies": {
@@ -18,10 +22,8 @@
     },
     "devDependencies": {
         "jsdom": "^26.1.0",
+        "typescript": "^5.9.3",
         "vitest": "^4.0.18"
     },
-    "packageManager": "pnpm@10.28.1",
-    "exports": {
-        ".": "./src/index.ts"
-    }
+    "packageManager": "pnpm@10.28.1"
 }

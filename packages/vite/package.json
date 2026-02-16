@@ -1,11 +1,8 @@
 {
-    "name": "@pigeonhole/markdoc",
+    "name": "@pigeonhole/vite",
     "version": "0.0.0",
     "private": true,
-    "description": "",
-    "keywords": [],
     "license": "MIT",
-    "author": "",
     "exports": {
         ".": "./src/index.ts"
     },
@@ -18,13 +15,16 @@
         "test": "pnpm vitest run"
     },
     "dependencies": {
-        "@markdoc/markdoc": "^0.5.4",
-        "js-yaml": "^4.1.1"
+        "@pigeonhole/markdoc": "workspace:*",
+        "@pigeonhole/render": "workspace:*"
     },
     "devDependencies": {
-        "@types/js-yaml": "^4.0.9",
         "typescript": "^5.9.3",
+        "vite": "^7.3.1",
         "vitest": "^4.0.18"
+    },
+    "peerDependencies": {
+        "vite": ">=6.0.0"
     },
     "packageManager": "pnpm@10.28.1"
 }
