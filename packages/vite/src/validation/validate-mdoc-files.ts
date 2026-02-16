@@ -15,7 +15,7 @@ export function validateMdocFiles(
     for (const page of mdocFiles) {
         // import パスの解決可能性を検証
         for (const importEntry of page.imports) {
-            const resolvedPath = normalizePath(join(root, "src", importEntry.path))
+            const resolvedPath = normalizePath(join(root, importEntry.path))
             if (!existsSync(resolvedPath)) {
                 throw new Error(
                     `import path "${importEntry.path}" in "${page.filePath}" does not resolve to an existing file, expected: "${resolvedPath}"`,

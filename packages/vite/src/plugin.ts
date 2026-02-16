@@ -4,6 +4,7 @@ import { mkdirSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 import type { Plugin } from "vite"
 import type { PropsSchema } from "@pigeonhole/render"
+import { loadConfig } from "./config/load-config"
 import { scanComponents } from "./scanner/scan-components"
 import { scanMdocFiles } from "./scanner/scan-mdoc-files"
 import type { ComponentInfo } from "./scanner/types"
@@ -12,12 +13,6 @@ import { generateClientModule } from "./codegen/client-module"
 import { generateTypeDefinitions, generateVirtualModuleTypes } from "./codegen/type-definitions"
 import { validateMdocFiles } from "./validation/validate-mdoc-files"
 
-// プラグインオプション
-export interface PigeonholePluginOptions {
-    /** authorInputPolicy.deny パターン（config-loader 実装まではこちらで直接指定） */
-    denyPatterns?: string[]
-}
-
 // 仮想モジュール ID
 const VIRTUAL_COMPONENTS = "virtual:pigeonhole/components"
 const VIRTUAL_CLIENT = "virtual:pigeonhole/client"
@@ -25,7 +20,7 @@ const RESOLVED_VIRTUAL_COMPONENTS = `\0${VIRTUAL_COMPONENTS}`
 const RESOLVED_VIRTUAL_CLIENT = `\0${VIRTUAL_CLIENT}`
 
 // Pigeonhole Vite プラグインを作成する
-export function pigeonhole(options?: PigeonholePluginOptions): Plugin {
+export function pigeonhole(): Plugin {
     let root: string
     let scannedComponents: ComponentInfo[] = []
 
@@ -37,14 +32,15 @@ export function pigeonhole(options?: PigeonholePluginOptions): Plugin {
         },
 
         async buildStart() {
-            const denyPatterns = options?.denyPatterns ?? []
+            const config = await loadConfig(root)
+            const denyPatterns = config.denyPatterns
 
             // コンポーネントスキャン
-            scannedComponents = await scanComponents(root)
+            scannedComponents = await scanComponents(root, config.componentsDir)
 
             // .mdoc ファイルスキャン
-            const mdocPages = await scanMdocFiles(root, "src/pages")
-            const mdocComponents = await scanMdocFiles(root, "src/components")
+            const mdocPages = await scanMdocFiles(root, config.pagesDir)
+            const mdocComponents = await scanMdocFiles(root, config.componentsDir)
 
             // タグ名衝突検知マップ
             const tagNameSourceMap = new Map<string, string>()

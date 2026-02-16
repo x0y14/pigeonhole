@@ -16,7 +16,9 @@
     },
     "dependencies": {
         "@pigeonhole/markdoc": "workspace:*",
-        "@pigeonhole/render": "workspace:*"
+        "@pigeonhole/render": "workspace:*",
+        "jiti": "^2.6.1",
+        "zod": "^4.3.6"
     },
     "devDependencies": {
         "typescript": "^5.9.3",

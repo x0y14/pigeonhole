@@ -35,7 +35,7 @@ export function Card(props: CardProps, children: string): string {
 `,
         )
 
-        const results = await scanComponents(root)
+        const results = await scanComponents(root, "src/components")
         assert.equal(results.length, 1)
         assert.equal(results[0].tagName, "Card")
         assert.isFalse(results[0].isIsland)
@@ -66,7 +66,7 @@ export class CounterElement extends LitElement {}
 `,
         )
 
-        const results = await scanComponents(root)
+        const results = await scanComponents(root, "src/components")
         assert.equal(results.length, 1)
         assert.isTrue(results[0].isIsland)
         assert.equal(results[0].customElementTagName, "ph-counter")
@@ -95,7 +95,7 @@ export function Button(props: ButtonProps, children: string): string {
 `,
         )
 
-        const results = await scanComponents(root)
+        const results = await scanComponents(root, "src/components")
         assert.equal(results.length, 1)
         assert.equal(results[0].tagName, "Button")
     } finally {
@@ -119,7 +119,7 @@ test("export 命名規約に違反するファイルはエラーを投げる", a
         )
 
         try {
-            await scanComponents(root)
+            await scanComponents(root, "src/components")
             assert.fail("エラーが投げられるべき")
         } catch (error) {
             assert.include((error as Error).message, "export naming convention violation")
@@ -133,7 +133,7 @@ test("export 命名規約に違反するファイルはエラーを投げる", a
 test("コンポーネントディレクトリが存在しない場合は空配列を返す", async () => {
     const root = createTempDir()
     try {
-        const results = await scanComponents(root)
+        const results = await scanComponents(root, "src/components")
         assert.deepEqual(results, [])
     } finally {
         rmSync(root, { recursive: true, force: true })

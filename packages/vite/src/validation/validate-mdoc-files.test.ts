@@ -29,7 +29,7 @@ test("存在する import パスは検証を通過する", () => {
         const mdocFiles: MdocFileInfo[] = [
             {
                 filePath: join(root, "src/pages/index.mdoc"),
-                imports: [{ path: "components/Card.mdoc.tsx" }],
+                imports: [{ path: "src/components/Card.mdoc.tsx" }],
                 inputs: [],
                 tagAttributes: {},
             },
@@ -50,7 +50,7 @@ test("存在しない import パスはエラーを投げる", () => {
         const mdocFiles: MdocFileInfo[] = [
             {
                 filePath: join(root, "src/pages/index.mdoc"),
-                imports: [{ path: "components/Missing.mdoc.tsx" }],
+                imports: [{ path: "src/components/Missing.mdoc.tsx" }],
                 inputs: [],
                 tagAttributes: {},
             },

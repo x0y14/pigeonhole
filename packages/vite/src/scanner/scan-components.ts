@@ -57,8 +57,8 @@ async function walkDirectory(directory: string): Promise<string[]> {
 }
 
 // コンポーネントディレクトリ配下をスキャンする
-export async function scanComponents(root: string): Promise<ComponentInfo[]> {
-    const absoluteDir = join(root, "src/components")
+export async function scanComponents(root: string, dir: string): Promise<ComponentInfo[]> {
+    const absoluteDir = join(root, dir)
     const results: ComponentInfo[] = []
 
     let files: string[]
