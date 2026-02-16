@@ -1,11 +1,8 @@
 {
-    "name": "@pigeonhole/server",
+    "name": "@pigeonhole/hono",
     "version": "0.0.0",
     "private": true,
-    "description": "",
-    "keywords": [],
     "license": "MIT",
-    "author": "",
     "exports": {
         ".": "./src/index.ts"
     },
@@ -18,12 +15,16 @@
         "test": "pnpm vitest run"
     },
     "dependencies": {
-        "@pigeonhole/markdoc": "workspace:*",
+        "@pigeonhole/server": "workspace:*",
         "@pigeonhole/render": "workspace:*"
     },
     "devDependencies": {
+        "hono": "^4",
         "typescript": "^5.9.3",
         "vitest": "^4.0.18"
+    },
+    "peerDependencies": {
+        "hono": ">=4.0.0"
     },
     "packageManager": "pnpm@10.28.1"
 }

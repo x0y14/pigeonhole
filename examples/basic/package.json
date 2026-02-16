@@ -1,0 +1,20 @@
+{
+    "name": "example-basic",
+    "private": true,
+    "scripts": {
+        "dev": "vite --configLoader runner",
+        "e2e": "playwright test",
+        "e2e:install": "playwright install --with-deps chromium"
+    },
+    "dependencies": {
+        "@pigeonhole/hono": "workspace:*",
+        "@pigeonhole/vite": "workspace:*",
+        "hono": "^4",
+        "@hono/node-server": "^1"
+    },
+    "devDependencies": {
+        "@hono/vite-dev-server": "^0.19",
+        "@playwright/test": "^1",
+        "vite": "^7.3.1"
+    }
+}
