@@ -99,6 +99,9 @@ importers:
 
   packages/server:
     dependencies:
+      '@markdoc/markdoc':
+        specifier: ^0.5.4
+        version: 0.5.4
       '@pigeonhole/markdoc':
         specifier: workspace:*
         version: link:../markdoc

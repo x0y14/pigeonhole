@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest"
-import Markdoc, { type Tag } from "@markdoc/markdoc"
+import Markdoc, { Tag } from "@markdoc/markdoc"
 import { transformMarkdoc } from "./transform"
 
 function isTag(node: unknown): node is Tag {

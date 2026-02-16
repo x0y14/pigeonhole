@@ -13,7 +13,7 @@ test("Greeting コンポーネントに name が注入される", async ({ page 
 test("レスポンスが有効な HTML ドキュメントである", async ({ page }) => {
     await page.goto("/")
     const html = await page.content()
-    expect(html).toContain("<!doctype html>")
+    expect(html).toMatch(/<!doctype html>/i)
     expect(html).toContain("<html")
     expect(html).toContain("</html>")
 })

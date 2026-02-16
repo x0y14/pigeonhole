@@ -1,5 +1,5 @@
 import yaml from "js-yaml"
-import { Node } from "@markdoc/markdoc"
+import type { Node } from "@markdoc/markdoc"
 
 // ---
 // - import

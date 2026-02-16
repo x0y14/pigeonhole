@@ -1,4 +1,4 @@
-import Markdoc, { type Config, type RenderableTreeNode, type Tag } from "@markdoc/markdoc"
+import Markdoc, { type Config, type RenderableTreeNode, Tag } from "@markdoc/markdoc"
 import { buildConfig } from "./config"
 import { rejectFunctions } from "./function"
 import { filterTagAttributes } from "./tag"

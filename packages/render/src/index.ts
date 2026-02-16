@@ -1,4 +1,5 @@
-export { Tag, type RenderableTreeNode } from "@markdoc/markdoc"
+export { Tag } from "@markdoc/markdoc"
+export type { RenderableTreeNode } from "@markdoc/markdoc"
 
 // props
 export { matchesDenyPattern } from "./props/index"

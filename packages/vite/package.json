@@ -4,7 +4,10 @@
     "private": true,
     "license": "MIT",
     "exports": {
-        ".": "./src/index.ts"
+        ".": "./src/index.ts",
+        "./virtual": {
+            "types": "./virtual.d.ts"
+        }
     },
     "scripts": {
         "lint": "oxlint .",

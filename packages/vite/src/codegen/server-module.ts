@@ -18,5 +18,12 @@ export function generateServerModule(components: ComponentInfo[]): string {
     lines.push("};")
     lines.push("")
 
+    lines.push("export const propsSchemas = {")
+    for (const component of components) {
+        lines.push(`  ${component.tagName}: ${JSON.stringify(component.propsSchema)},`)
+    }
+    lines.push("};")
+    lines.push("")
+
     return lines.join("\n")
 }

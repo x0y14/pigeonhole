@@ -27,6 +27,9 @@ test("ComponentInfo からサーバー仮想モジュールを生成する", () 
     assert.include(result, "export const components = {")
     assert.include(result, "  Card,")
     assert.include(result, "  Footer,")
+    assert.include(result, "export const propsSchemas = {")
+    assert.include(result, '  Card: {"title":"string"},')
+    assert.include(result, "  Footer: {},")
 })
 
 // 空のコンポーネントリスト

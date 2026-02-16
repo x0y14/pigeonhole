@@ -1,7 +1,14 @@
 import { transformMarkdoc } from "@pigeonhole/markdoc"
+import { type Config } from "@markdoc/markdoc"
 import { renderToHtml } from "@pigeonhole/render"
 import type { RenderOptions } from "@pigeonhole/render"
 import type { RenderMdocOptions, RenderPageResult } from "./types"
+
+const MARKDOC_TYPE_MAP: Record<string, BooleanConstructor | NumberConstructor | StringConstructor> = {
+    string: String,
+    number: Number,
+    boolean: Boolean,
+}
 
 /**
  * Markdoc ソース文字列を HTML にレンダリングする
@@ -16,7 +23,23 @@ export async function renderMdoc(
     variables: Record<string, unknown>,
     options: RenderMdocOptions = {},
 ): Promise<RenderPageResult> {
-    const tree = transformMarkdoc(source, {}, {}, variables)
+    const tags: NonNullable<Config["tags"]> = {}
+    if (options.components) {
+        for (const name of Object.keys(options.components)) {
+            const schema = options.propsSchemas?.[name]
+            const attributes: Record<string, { type: BooleanConstructor | NumberConstructor | StringConstructor }> = {}
+            if (schema) {
+                for (const key of Object.keys(schema)) {
+                    const baseName = key.endsWith("?") ? key.slice(0, -1) : key
+                    if (baseName !== "children") {
+                        attributes[baseName] = { type: MARKDOC_TYPE_MAP[schema[key]] ?? String }
+                    }
+                }
+            }
+            tags[name] = { render: name, attributes }
+        }
+    }
+    const tree = transformMarkdoc(source, { tags }, {}, variables)
 
     const renderOptions: RenderOptions = {
         components: options.components,

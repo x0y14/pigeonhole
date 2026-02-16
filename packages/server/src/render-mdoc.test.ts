@@ -17,7 +17,7 @@ describe("renderMdoc", () => {
     })
 
     test("ssr モードでコンポーネントを描画する", async () => {
-        const source = '{% callout type="info" %}content{% /callout %}'
+        const source = '{% Callout type="info" %}content{% /Callout %}'
         const result = await renderMdoc(
             source,
             {},
@@ -28,13 +28,34 @@ describe("renderMdoc", () => {
                         // oxlint-disable-next-line typescript/restrict-template-expressions
                         `<div class="callout-${props.type}">${children}</div>`,
                 },
+                propsSchemas: {
+                    Callout: { type: "string", "children?": "string" },
+                },
             },
         )
-        // コンポーネントが Markdoc タグとして認識されるには tags 定義が必要
-        // ここでは components だけ渡しているので、未知のタグは無視される
-        // 基本的な動作確認として html が返ることを検証
-        assert.typeOf(result.html, "string")
+        assert.include(result.html, '<div class="callout-info">')
+        assert.include(result.html, "content")
         assert.equal(result.hasIslands, false)
+    })
+
+    test("number 型の属性が正しく渡される", async () => {
+        const source = '{% Counter count=5 %}content{% /Counter %}'
+        const result = await renderMdoc(
+            source,
+            {},
+            {
+                mode: "ssr",
+                components: {
+                    Counter: (props, children) =>
+                        `<div data-count="${props.count}">${children}</div>`,
+                },
+                propsSchemas: {
+                    Counter: { count: "number", "children?": "string" },
+                },
+            },
+        )
+        assert.include(result.html, 'data-count="5"')
+        assert.include(result.html, "content")
     })
 
     test("オプションなしでもデフォルトで動作する", async () => {
@@ -44,7 +65,7 @@ describe("renderMdoc", () => {
     })
 
     test("island モードで island コンポーネントがあれば hasIslands が true になる", async () => {
-        const source = '{% callout type="info" %}content{% /callout %}'
+        const source = '{% Callout type="info" %}content{% /Callout %}'
         const result = await renderMdoc(
             source,
             {},
@@ -53,10 +74,13 @@ describe("renderMdoc", () => {
                 components: {
                     Callout: (props, children) => `<div class="callout">${children}</div>`,
                 },
+                propsSchemas: {
+                    Callout: { type: "string", "children?": "string" },
+                },
                 islandComponents: new Set(["Callout"]),
             },
         )
-        // タグ定義なしのため island として認識されないが、エラーなく動作する
-        assert.typeOf(result.html, "string")
+        assert.include(result.html, "callout")
+        assert.equal(result.hasIslands, true)
     })
 })

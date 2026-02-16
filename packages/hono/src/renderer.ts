@@ -5,6 +5,7 @@ import { createDocument } from "@pigeonhole/render"
 
 export interface PageRendererOptions {
     components?: Record<string, ServerComponent>
+    propsSchemas?: Record<string, Record<string, string>>
 }
 
 export function createPageRenderer(options: PageRendererOptions = {}) {
@@ -15,6 +16,7 @@ export function createPageRenderer(options: PageRendererOptions = {}) {
     ): Promise<Response> {
         const result = await renderMdoc(source, variables, {
             components: options.components,
+            propsSchemas: options.propsSchemas,
         })
         return c.html(
             createDocument({
