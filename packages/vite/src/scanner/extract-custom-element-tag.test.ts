@@ -30,3 +30,30 @@ export function Card(props: CardProps, children: string): string {
 test("空文字列の場合は null を返す", () => {
     assert.isNull(extractCustomElementTag(""))
 })
+
+// customElements.define() からの抽出
+test("ダブルクォートの customElements.define からタグ名を抽出する", () => {
+    const source = `
+export class CounterElement extends HTMLElement {}
+customElements.define("ph-counter", CounterElement)
+`
+    assert.equal(extractCustomElementTag(source), "ph-counter")
+})
+
+test("シングルクォートの customElements.define からタグ名を抽出する", () => {
+    const source = `
+export class HeroElement extends HTMLElement {}
+customElements.define('ph-hero', HeroElement)
+`
+    assert.equal(extractCustomElementTag(source), "ph-hero")
+})
+
+// @customElement が customElements.define より優先される
+test("@customElement と customElements.define が両方ある場合はデコレータを優先する", () => {
+    const source = `
+@customElement("ph-from-decorator")
+class MyElement extends LitElement {}
+customElements.define("ph-from-define", MyElement)
+`
+    assert.equal(extractCustomElementTag(source), "ph-from-decorator")
+})

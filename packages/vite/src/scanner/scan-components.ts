@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises"
 import { basename, join } from "node:path"
 import { glob } from "tinyglobby"
 import { normalizePath } from "vite"
-import { extractLitComponentTag } from "./extract-lit-component-tag"
+import { extractCustomElementTag } from "./extract-custom-element-tag"
 import { extractExportNames } from "./extract-export-names"
 import { extractPropsSchema } from "./extract-props-schema"
 import type { ComponentInfo } from "./types"
@@ -13,7 +13,7 @@ function validateExportName(tagName: string, exportName: string): boolean {
 }
 
 // 単一コンポーネントファイルをスキャンする
-async function scanComponentFile(filePath: string, source: string): Promise<ComponentInfo> {
+function scanComponentFile(filePath: string, source: string): ComponentInfo {
     const fileName = basename(filePath)
     const tagName = fileName.replace(".mdoc.tsx", "")
 
@@ -25,9 +25,7 @@ async function scanComponentFile(filePath: string, source: string): Promise<Comp
         )
     }
 
-    // LIT コンポーネントを動的インポートして customElements レジストリからタグ名を取得する
-    const customElementTagName = await extractLitComponentTag(filePath)
-    // Island detection: customElements に登録されたコンポーネントはクライアントサイドのハイドレーションが必要
+    const customElementTagName = extractCustomElementTag(source)
     const isIsland = customElementTagName !== null
     const propsSchema = extractPropsSchema(source, `${tagName}Props`)
 
@@ -56,7 +54,7 @@ export async function scanComponents(root: string, dir: string): Promise<Compone
     for (const filePath of files) {
         const source = await readFile(filePath, "utf-8")
         const normalized = normalizePath(filePath)
-        results.push(await scanComponentFile(normalized, source))
+        results.push(scanComponentFile(normalized, source))
     }
 
     return results

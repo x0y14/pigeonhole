@@ -1,8 +1,16 @@
-// @customElement デコレータからタグ名を抽出する
+// @customElement デコレータまたは customElements.define() からタグ名を静的に抽出する
 export function extractCustomElementTag(source: string): string | null {
-    const match = /@customElement\(\s*["']([^"']+)["']\s*\)/.exec(source)
-    if (!match) {
-        return null
+    // @customElement("tag-name") デコレータ
+    const decoratorMatch = /@customElement\(\s*["']([^"']+)["']\s*\)/.exec(source)
+    if (decoratorMatch) {
+        return decoratorMatch[1]
     }
-    return match[1]
+
+    // customElements.define("tag-name", ClassName)
+    const defineMatch = /customElements\.define\(\s*["']([^"']+)["']/.exec(source)
+    if (defineMatch) {
+        return defineMatch[1]
+    }
+
+    return null
 }
