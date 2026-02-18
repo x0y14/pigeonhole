@@ -60,3 +60,15 @@ test("renderLitTemplate: render() の出力に defer-hydration は自動付与�
     const result = await renderLitTemplate(template)
     assert.notInclude(result, "defer-hydration")
 })
+
+test("renderLitTemplate: deferHydration: true で defer-hydration 属性が付与される", async () => {
+    const template = html`<test-counter></test-counter>`
+    const result = await renderLitTemplate(template, { deferHydration: true })
+    assert.include(result, "defer-hydration")
+})
+
+test("renderLitTemplate: deferHydration: false で defer-hydration 属性が付与されない", async () => {
+    const template = html`<test-counter></test-counter>`
+    const result = await renderLitTemplate(template, { deferHydration: false })
+    assert.notInclude(result, "defer-hydration")
+})

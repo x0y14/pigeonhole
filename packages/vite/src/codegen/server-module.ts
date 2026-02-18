@@ -63,7 +63,7 @@ function generateIslandSsrFunction(
         `const ${componentName} = async (props, children) => {`,
         `  const template = html\`<${tagName}${propBindings}`,
         `  >\${unsafeHTML(children || '')}</${tagName}>\`;`,
-        `  return renderLitTemplate(template);`,
+        `  return renderLitTemplate(template, { deferHydration: true });`,
         `};`,
     ].join("\n")
 }

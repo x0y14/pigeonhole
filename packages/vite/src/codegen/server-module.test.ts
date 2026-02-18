@@ -61,8 +61,8 @@ test("Lit コンポーネントのテンプレート関数を生成する", () =
     assert.include(result, 'import "/project/src/components/Counter.mdoc.tsx";')
     // プロパティバインディングが生成される
     assert.include(result, ".count=${props.count}")
-    // renderLitTemplate を呼び出す
-    assert.include(result, "renderLitTemplate(template)")
+    // renderLitTemplate を deferHydration: true で呼び出す
+    assert.include(result, "renderLitTemplate(template, { deferHydration: true })")
     // 関数コンポーネントは既存通り
     assert.include(result, 'import { Card } from "/project/src/components/Card.mdoc.tsx";')
     // components map に両方含まれる
@@ -108,6 +108,22 @@ test("Lit コンポーネントがない場合は Lit 関連をインポート�
     assert.notInclude(result, "renderLitTemplate")
     assert.notInclude(result, "import { html }")
     assert.notInclude(result, "unsafeHTML")
+})
+
+// 非 island の Lit コンポーネントには deferHydration が含まれない
+test("非 island コンポーネントの生成コードに deferHydration が含まれない", () => {
+    const components: ComponentInfo[] = [
+        {
+            filePath: "/project/src/components/Card.mdoc.tsx",
+            tagName: "Card",
+            isIsland: false,
+            customElementTagName: null,
+            propsSchema: {},
+        },
+    ]
+
+    const result = generateServerModule(components)
+    assert.notInclude(result, "deferHydration")
 })
 
 // 空のコンポーネントリスト
