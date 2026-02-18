@@ -7,7 +7,7 @@ export function extractCustomElementTag(source: string): string | null {
     }
 
     // customElements.define("tag-name", ClassName)
-    const defineMatch = /customElements\.define\(\s*["']([^"']+)["']/.exec(source)
+    const defineMatch = /customElements\.define\(\s*["']([^"']+)["']\s*,/.exec(source)
     if (defineMatch) {
         return defineMatch[1]
     }
