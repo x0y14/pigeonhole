@@ -39,6 +39,16 @@ export class Slider extends LitElement {
     assert.equal(extractHydrateMode(source), "lazy")
 })
 
+test("static hydrate = 'client-only' を持つクラスは 'client-only' を返す", () => {
+    const source = `
+@customElement("ph-browser-info")
+export class BrowserInfo extends LitElement {
+    static hydrate = "client-only"
+}
+`
+    assert.equal(extractHydrateMode(source), "client-only")
+})
+
 test("関数コンポーネントは 'none' を返す", () => {
     const source = `
 export function Card(props: CardProps, children: string): string {

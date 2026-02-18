@@ -18,7 +18,7 @@ export interface RenderOptions {
     propsSchemas?: Record<string, PropsSchema>
     denyPatterns?: string[]
     authorAttrsMap?: Record<string, Set<string>>
-    hydrateComponents?: Map<string, "eager" | "lazy">
+    hydrateComponents?: Map<string, "eager" | "lazy" | "client-only">
     islandTagNames?: Record<string, string>
 }
 

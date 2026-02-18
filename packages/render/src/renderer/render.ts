@@ -106,12 +106,21 @@ async function renderTag(
             renderedChildren: childrenHtml,
         })
 
+        const hydrateMode = options.hydrateComponents?.get(name)
+
+        if (hydrateMode === "client-only") {
+            // client-only: SSR を行わず空プレースホルダー + props JSON を出力
+            context.hasIslands = true
+            const islandId = generateIslandId(renderCtx)
+            const ceTagName = options.islandTagNames?.[name] ?? name
+            return wrapIslandHtml(islandId, ceTagName, "", sanitized, hydrateMode)
+        }
+
         const componentHtml = await component(
             sanitized,
             (sanitized.children as string) ?? childrenHtml,
         )
 
-        const hydrateMode = options.hydrateComponents?.get(name)
         if (hydrateMode) {
             // eager/lazy: SSR + hydration markers
             context.hasIslands = true

@@ -5,6 +5,7 @@ import type { ComponentInfo } from "../scanner/types"
 export function generateClientModule(islands: ComponentInfo[]): string {
     const eagerIslands = islands.filter((i) => i.hydrateMode === "eager")
     const lazyIslands = islands.filter((i) => i.hydrateMode === "lazy")
+    const clientOnlyIslands = islands.filter((i) => i.hydrateMode === "client-only")
     const lines: string[] = []
 
     // hydrate support
@@ -16,8 +17,8 @@ export function generateClientModule(islands: ComponentInfo[]): string {
     lines.push("restoreIslandProps();")
     lines.push("")
 
-    // eager island: 即座に import
-    for (const island of eagerIslands) {
+    // eager / client-only island: 即座に import
+    for (const island of [...eagerIslands, ...clientOnlyIslands]) {
         const path = normalizePath(island.filePath)
         lines.push(`import "${path}";`)
     }

@@ -189,6 +189,45 @@ test("renderToHtml: eager コンポーネントには data-ph-hydrate が付か�
     assert.equal(result.hasIslands, true)
 })
 
+// --- client-only ハイドレーション ---
+
+test("renderToHtml: client-only コンポーネントは SSR コンテンツなしで出力する", async () => {
+    const options: RenderOptions = {
+        components: {
+            BrowserInfo: () => "<span>should not appear</span>",
+        },
+        propsSchemas: { BrowserInfo: { ua: { type: "string", optional: false } } },
+        hydrateComponents: new Map([["BrowserInfo", "client-only"]]),
+        islandTagNames: { BrowserInfo: "ph-browser-info" },
+    }
+    const result = await renderToHtml(tag("BrowserInfo", { ua: "test" }), options)
+    // SSR コンテンツがない
+    assert.notInclude(result.html, "should not appear")
+    // data-ph-hydrate="client-only" が付く
+    assert.include(result.html, 'data-ph-hydrate="client-only"')
+    // island ID が付く
+    assert.include(result.html, 'data-ph-island-id="ph-1"')
+    // props JSON script が出力される
+    assert.include(result.html, '<script type="application/json" id="ph-props-ph-1">')
+    assert.include(result.html, '"ua":"test"')
+    // hasIslands: true
+    assert.equal(result.hasIslands, true)
+})
+
+test("renderToHtml: client-only コンポーネントはカスタム要素タグでラップされる", async () => {
+    const options: RenderOptions = {
+        components: {
+            BrowserInfo: () => "<span>ssr</span>",
+        },
+        propsSchemas: { BrowserInfo: {} },
+        hydrateComponents: new Map([["BrowserInfo", "client-only"]]),
+        islandTagNames: { BrowserInfo: "ph-browser-info" },
+    }
+    const result = await renderToHtml(tag("BrowserInfo", {}), options)
+    assert.include(result.html, "<ph-browser-info")
+    assert.include(result.html, "</ph-browser-info>")
+})
+
 // --- filterProps 統合 ---
 
 test("renderToHtml: filterProps でスキーマ外の属性を除外する", async () => {

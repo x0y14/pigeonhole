@@ -166,6 +166,58 @@ test("lazy Lit コンポーネントは deferHydration: true で生成する", (
     assert.include(result, ".index=${props.index}")
 })
 
+// client-only Lit コンポーネントはスタブ関数を生成する
+test("client-only Lit コンポーネントはサーバー import なしでスタブ関数を生成する", () => {
+    const components: ComponentInfo[] = [
+        {
+            filePath: "/project/src/components/BrowserInfo.mdoc.tsx",
+            tagName: "BrowserInfo",
+            hydrateMode: "client-only",
+            customElementTagName: "ph-browser-info",
+            propsSchema: { ua: { type: "string", optional: false } },
+        },
+    ]
+
+    const result = generateServerModule(components)
+    // サーバー import が生成されない
+    assert.notInclude(result, 'import "/project/src/components/BrowserInfo.mdoc.tsx";')
+    assert.notInclude(result, 'import { BrowserInfo }')
+    // スタブ関数が生成される
+    assert.include(result, 'const BrowserInfo = () => "";')
+    // components マップに含まれる
+    assert.include(result, "  BrowserInfo,")
+    // renderLitTemplate は呼ばれない
+    assert.notInclude(result, "renderLitTemplate")
+})
+
+// client-only と他のモードが混在する場合
+test("client-only と eager が混在する場合に正しく生成する", () => {
+    const components: ComponentInfo[] = [
+        {
+            filePath: "/project/src/components/Counter.mdoc.tsx",
+            tagName: "Counter",
+            hydrateMode: "eager",
+            customElementTagName: "ph-counter",
+            propsSchema: { count: { type: "number", optional: false } },
+        },
+        {
+            filePath: "/project/src/components/BrowserInfo.mdoc.tsx",
+            tagName: "BrowserInfo",
+            hydrateMode: "client-only",
+            customElementTagName: "ph-browser-info",
+            propsSchema: {},
+        },
+    ]
+
+    const result = generateServerModule(components)
+    // eager は通常の Lit SSR パス
+    assert.include(result, 'import "/project/src/components/Counter.mdoc.tsx";')
+    assert.include(result, "renderLitTemplate(template, { deferHydration: true })")
+    // client-only はスタブ
+    assert.include(result, 'const BrowserInfo = () => "";')
+    assert.notInclude(result, 'import "/project/src/components/BrowserInfo.mdoc.tsx";')
+})
+
 // 空のコンポーネントリスト
 test("空のコンポーネントリストでは空の components を生成する", () => {
     const result = generateServerModule([])

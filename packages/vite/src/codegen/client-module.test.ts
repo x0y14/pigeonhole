@@ -118,6 +118,68 @@ test("eager と lazy が混在する場合に正しく分離される", () => {
     assert.include(result, '"Slider": "ph-slider"')
 })
 
+// client-only island のコード生成
+test("client-only island は即座 import で生成される", () => {
+    const islands: ComponentInfo[] = [
+        {
+            filePath: "/project/src/components/BrowserInfo.mdoc.tsx",
+            tagName: "BrowserInfo",
+            hydrateMode: "client-only",
+            customElementTagName: "ph-browser-info",
+            propsSchema: { ua: { type: "string", optional: false } },
+        },
+    ]
+
+    const result = generateClientModule(islands)
+
+    // 即座 import が生成される
+    assert.include(result, 'import "/project/src/components/BrowserInfo.mdoc.tsx";')
+    // observeLazyIslands に含まれない
+    assert.notInclude(result, "observeLazyIslands")
+    // island マップに含まれる
+    assert.include(result, '"BrowserInfo": "ph-browser-info"')
+})
+
+// eager, lazy, client-only の混在
+test("eager, lazy, client-only が混在する場合に正しく分離される", () => {
+    const islands: ComponentInfo[] = [
+        {
+            filePath: "/project/src/components/Counter.mdoc.tsx",
+            tagName: "Counter",
+            hydrateMode: "eager",
+            customElementTagName: "ph-counter",
+            propsSchema: {},
+        },
+        {
+            filePath: "/project/src/components/Slider.mdoc.tsx",
+            tagName: "Slider",
+            hydrateMode: "lazy",
+            customElementTagName: "ph-slider",
+            propsSchema: {},
+        },
+        {
+            filePath: "/project/src/components/BrowserInfo.mdoc.tsx",
+            tagName: "BrowserInfo",
+            hydrateMode: "client-only",
+            customElementTagName: "ph-browser-info",
+            propsSchema: {},
+        },
+    ]
+
+    const result = generateClientModule(islands)
+
+    // eager は通常 import
+    assert.include(result, 'import "/project/src/components/Counter.mdoc.tsx";')
+    // client-only も通常 import
+    assert.include(result, 'import "/project/src/components/BrowserInfo.mdoc.tsx";')
+    // lazy は dynamic import
+    assert.include(result, '"ph-slider": () => import("/project/src/components/Slider.mdoc.tsx")')
+    // 全て island マップに含まれる
+    assert.include(result, '"Counter": "ph-counter"')
+    assert.include(result, '"Slider": "ph-slider"')
+    assert.include(result, '"BrowserInfo": "ph-browser-info"')
+})
+
 // 空の island リスト
 test("空の island リストでも基本構造を生成する", () => {
     const result = generateClientModule([])
