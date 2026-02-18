@@ -1,1 +1,1 @@
-export { createLitBridge } from "./lit-ssr-bridge"
+export { renderLitTemplate } from "./lit-ssr-bridge"

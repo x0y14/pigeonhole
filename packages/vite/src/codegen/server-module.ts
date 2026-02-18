@@ -7,19 +7,23 @@ export function generateServerModule(components: ComponentInfo[]): string {
     const hasLitComponents = components.some((c) => c.customElementTagName !== null)
 
     if (hasLitComponents) {
-        lines.push('import { createLitBridge } from "@pigeonhole/render/lit";')
+        lines.push('import { renderLitTemplate } from "@pigeonhole/render/lit";')
+        lines.push('import { html } from "lit";')
+        lines.push('import { unsafeHTML } from "lit/directives/unsafe-html.js";')
         lines.push("")
     }
 
     for (const component of components) {
         const path = normalizePath(component.filePath)
         if (component.customElementTagName !== null) {
-            // Lit: クラスをインポートしてブリッジでラップ
+            // Lit: 副作用インポート（customElements.define）+ テンプレート関数生成
+            lines.push(`import "${path}";`)
             lines.push(
-                `import { ${component.tagName} as _${component.tagName}Class } from "${path}";`,
-            )
-            lines.push(
-                `const ${component.tagName} = createLitBridge(_${component.tagName}Class, "${component.customElementTagName}");`,
+                generateIslandSsrFunction(
+                    component.tagName,
+                    component.customElementTagName,
+                    Object.keys(component.propsSchema),
+                ),
             )
         } else {
             // 関数コンポーネント: 既存通り
@@ -43,4 +47,23 @@ export function generateServerModule(components: ComponentInfo[]): string {
     lines.push("")
 
     return lines.join("\n")
+}
+
+/** Lit アイランドの SSR 関数をコード生成する */
+function generateIslandSsrFunction(
+    componentName: string,
+    tagName: string,
+    propNames: string[],
+): string {
+    const propBindings = propNames
+        .map((name) => `\n    .${name}=\${props.${name}}`)
+        .join("")
+
+    return [
+        `const ${componentName} = async (props, children) => {`,
+        `  const template = html\`<${tagName}${propBindings}`,
+        `  >\${unsafeHTML(children || '')}</${tagName}>\`;`,
+        `  return renderLitTemplate(template);`,
+        `};`,
+    ].join("\n")
 }

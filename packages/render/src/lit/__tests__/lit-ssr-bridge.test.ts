@@ -1,5 +1,5 @@
 import { test, assert } from "vitest"
-import { createLitBridge } from "../lit-ssr-bridge"
+import { renderLitTemplate } from "../lit-ssr-bridge"
 import { LitElement, html } from "lit"
 
 // テスト用 LitElement（デコレータ不使用、静的 properties で定義）
@@ -20,24 +20,43 @@ class TestCounter extends LitElement {
     }
 }
 
-// 全テストで同一のブリッジを共有（customElements 二重登録を回避）
-const bridge = createLitBridge(TestCounter, "test-counter")
+if (!customElements.get("test-counter")) {
+    customElements.define("test-counter", TestCounter)
+}
 
-test("createLitBridge: ServerComponent 型の関数を返す", () => {
-    assert.isFunction(bridge)
+test("renderLitTemplate: 文字列を返す", async () => {
+    const template = html`<test-counter></test-counter>`
+    const result = await renderLitTemplate(template)
+    assert.isString(result)
 })
 
-test("createLitBridge: 出力に shadowrootmode='open' を含む", async () => {
-    const result = await bridge({}, "")
-    assert.include(result, '<template shadowrootmode="open">')
+test("renderLitTemplate: 出力に shadowrootmode='open' を含む", async () => {
+    const template = html`<test-counter></test-counter>`
+    const result = await renderLitTemplate(template)
+    assert.include(result, 'shadowrootmode="open"')
 })
 
-test("createLitBridge: props がレンダリング結果に反映される", async () => {
-    const result = await bridge({ count: 42 }, "")
+test("renderLitTemplate: 出力に外側タグを含む", async () => {
+    const template = html`<test-counter></test-counter>`
+    const result = await renderLitTemplate(template)
+    assert.include(result, "<test-counter")
+    assert.include(result, "</test-counter>")
+})
+
+test("renderLitTemplate: props がレンダリング結果に反映される", async () => {
+    const template = html`<test-counter .count=${42}></test-counter>`
+    const result = await renderLitTemplate(template)
     assert.include(result, "42")
 })
 
-test("createLitBridge: children は無視される", async () => {
-    const result = await bridge({ count: 0, children: "<p>ignored</p>" }, "")
-    assert.notInclude(result, "ignored")
+test("renderLitTemplate: hydration コメントが出力に含まれる", async () => {
+    const template = html`<test-counter></test-counter>`
+    const result = await renderLitTemplate(template)
+    assert.include(result, "<!--lit-part")
+})
+
+test("renderLitTemplate: render() の出力に defer-hydration は自動付与されない", async () => {
+    const template = html`<test-counter></test-counter>`
+    const result = await renderLitTemplate(template)
+    assert.notInclude(result, "defer-hydration")
 })

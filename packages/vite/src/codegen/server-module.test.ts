@@ -32,8 +32,8 @@ test("ComponentInfo からサーバー仮想モジュールを生成する", () 
     assert.include(result, "  Footer: {},")
 })
 
-// Lit コンポーネント（customElementTagName あり）のブリッジ生成
-test("Lit コンポーネントを createLitBridge でラップする", () => {
+// Lit コンポーネント（customElementTagName あり）のテンプレート関数生成
+test("Lit コンポーネントのテンプレート関数を生成する", () => {
     const components: ComponentInfo[] = [
         {
             filePath: "/project/src/components/Counter.mdoc.tsx",
@@ -52,11 +52,17 @@ test("Lit コンポーネントを createLitBridge でラップする", () => {
     ]
 
     const result = generateServerModule(components)
-    // Lit ブリッジ import が含まれる
-    assert.include(result, 'import { createLitBridge } from "@pigeonhole/render/lit";')
-    // Lit コンポーネントはクラスインポート + ブリッジラップ
-    assert.include(result, 'import { Counter as _CounterClass } from "/project/src/components/Counter.mdoc.tsx";')
-    assert.include(result, 'const Counter = createLitBridge(_CounterClass, "ph-counter");')
+    // renderLitTemplate のインポート
+    assert.include(result, 'import { renderLitTemplate } from "@pigeonhole/render/lit";')
+    // html と unsafeHTML のインポート
+    assert.include(result, 'import { html } from "lit";')
+    assert.include(result, 'import { unsafeHTML } from "lit/directives/unsafe-html.js";')
+    // 副作用インポート（customElements.define 登録）
+    assert.include(result, 'import "/project/src/components/Counter.mdoc.tsx";')
+    // プロパティバインディングが生成される
+    assert.include(result, ".count=${props.count}")
+    // renderLitTemplate を呼び出す
+    assert.include(result, "renderLitTemplate(template)")
     // 関数コンポーネントは既存通り
     assert.include(result, 'import { Card } from "/project/src/components/Card.mdoc.tsx";')
     // components map に両方含まれる
@@ -64,8 +70,30 @@ test("Lit コンポーネントを createLitBridge でラップする", () => {
     assert.include(result, "  Card,")
 })
 
-// Lit コンポーネントがない場合は createLitBridge をインポートしない
-test("Lit コンポーネントがない場合はブリッジをインポートしない", () => {
+// 複数の props がある場合のバインディング生成
+test("複数の props のバインディングを生成する", () => {
+    const components: ComponentInfo[] = [
+        {
+            filePath: "/project/src/components/Widget.mdoc.tsx",
+            tagName: "Widget",
+            isIsland: true,
+            customElementTagName: "ph-widget",
+            propsSchema: {
+                title: { type: "string", optional: false },
+                count: { type: "number", optional: false },
+                active: { type: "boolean", optional: true },
+            },
+        },
+    ]
+
+    const result = generateServerModule(components)
+    assert.include(result, ".title=${props.title}")
+    assert.include(result, ".count=${props.count}")
+    assert.include(result, ".active=${props.active}")
+})
+
+// Lit コンポーネントがない場合は Lit 関連インポートなし
+test("Lit コンポーネントがない場合は Lit 関連をインポートしない", () => {
     const components: ComponentInfo[] = [
         {
             filePath: "/project/src/components/Card.mdoc.tsx",
@@ -77,7 +105,9 @@ test("Lit コンポーネントがない場合はブリッジをインポート�
     ]
 
     const result = generateServerModule(components)
-    assert.notInclude(result, "createLitBridge")
+    assert.notInclude(result, "renderLitTemplate")
+    assert.notInclude(result, "import { html }")
+    assert.notInclude(result, "unsafeHTML")
 })
 
 // 空のコンポーネントリスト

@@ -54,15 +54,31 @@ export function serializeIslandProps(islandId: string, props: Record<string, unk
     return `<script type="application/json" id="${PH_ISLAND_PROPS_PREFIX}${islandId}">${escaped}</script>`
 }
 
-/** アイランドの HTML をマーカーでラップする */
+/**
+ * アイランドの HTML に island ID 属性を注入する
+ *
+ * Lit コンポーネント（render() 出力に外側タグを含む）の場合は
+ * 開始タグに data-ph-island-id を注入する。
+ * 関数コンポーネント（外側タグを含まない）の場合は従来のラップ方式。
+ */
 export function wrapIslandHtml(
     islandId: string,
     tagName: string,
-    innerHtml: string,
+    islandHtml: string,
     props: Record<string, unknown>,
-    options?: { deferHydration?: boolean },
 ): string {
     const propsScript = serializeIslandProps(islandId, props)
-    const deferAttr = options?.deferHydration ? " defer-hydration" : ""
-    return `<${tagName} ${PH_ISLAND_ID_ATTR}="${islandId}"${deferAttr}>${innerHtml}</${tagName}>${propsScript}`
+    const openTag = `<${tagName}`
+
+    if (islandHtml.includes(openTag)) {
+        // Lit コンポーネント: 既存の開始タグに属性を注入
+        const html = islandHtml.replace(
+            openTag,
+            `${openTag} ${PH_ISLAND_ID_ATTR}="${islandId}"`,
+        )
+        return html + propsScript
+    }
+
+    // 関数コンポーネント: 外側タグでラップ
+    return `<${tagName} ${PH_ISLAND_ID_ATTR}="${islandId}">${islandHtml}</${tagName}>${propsScript}`
 }

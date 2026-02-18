@@ -65,7 +65,29 @@ test("serializeIslandProps: シリアライズ不可な props でエラーを投
     assert.throws(() => serializeIslandProps("ph-1", circular), /failed to serialize island props/)
 })
 
-test("wrapIslandHtml: island HTML をラップする", () => {
+// --- wrapIslandHtml: 注入方式（Lit コンポーネント）---
+
+test("wrapIslandHtml: 外側タグを含む HTML に data-island-id を注入する", () => {
+    const islandHtml = '<my-counter defer-hydration><template shadowrootmode="open"><span>0</span></template></my-counter>'
+    const result = wrapIslandHtml("ph-1", "my-counter", islandHtml, { count: 0 })
+    assert.include(result, 'data-ph-island-id="ph-1"')
+    assert.include(result, "<my-counter")
+    assert.include(result, "</my-counter>")
+    assert.include(result, '<script type="application/json" id="ph-props-ph-1">{"count":0}</script>')
+})
+
+test("wrapIslandHtml: 開始タグの最初の出現箇所に属性を注入する", () => {
+    const islandHtml = "<my-counter><template></template></my-counter>"
+    const result = wrapIslandHtml("ph-1", "my-counter", islandHtml, {})
+    assert.equal(
+        result,
+        '<my-counter data-ph-island-id="ph-1"><template></template></my-counter><script type="application/json" id="ph-props-ph-1">{}</script>',
+    )
+})
+
+// --- wrapIslandHtml: ラップ方式（関数コンポーネント）---
+
+test("wrapIslandHtml: 外側タグを含まない HTML はラップする", () => {
     const result = wrapIslandHtml("ph-1", "my-counter", "<span>0</span>", { count: 0 })
     assert.equal(
         result,
@@ -73,16 +95,9 @@ test("wrapIslandHtml: island HTML をラップする", () => {
     )
 })
 
-test("wrapIslandHtml: deferHydration オプションで defer-hydration 属性を追加する", () => {
-    const result = wrapIslandHtml("ph-1", "my-counter", "<span>0</span>", { count: 0 }, { deferHydration: true })
-    assert.include(result, 'defer-hydration')
-    assert.equal(
-        result,
-        '<my-counter data-ph-island-id="ph-1" defer-hydration><span>0</span></my-counter><script type="application/json" id="ph-props-ph-1">{"count":0}</script>',
-    )
-})
-
-test("wrapIslandHtml: deferHydration なしでは defer-hydration 属性がない", () => {
-    const result = wrapIslandHtml("ph-1", "my-counter", "<span>0</span>", { count: 0 })
-    assert.notInclude(result, "defer-hydration")
+test("wrapIslandHtml: props JSON スクリプトが末尾に追加される", () => {
+    const islandHtml = "<my-widget>content</my-widget>"
+    const result = wrapIslandHtml("ph-1", "my-widget", islandHtml, { title: "test" })
+    assert.isTrue(result.endsWith("</script>"))
+    assert.include(result, '"title":"test"')
 })
