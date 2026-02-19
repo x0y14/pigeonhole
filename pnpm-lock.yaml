@@ -90,8 +90,8 @@ importers:
         version: link:../server
     devDependencies:
       hono:
-        specifier: ^4
-        version: 4.11.9
+        specifier: ^4.12.0
+        version: 4.12.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -1229,10 +1229,6 @@ packages:
   he@1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
-
-  hono@4.11.9:
-    resolution: {integrity: sha512-Eaw2YTGM6WOxA6CXbckaEvslr2Ne4NFsKrvc0v97JD5awbmeBLO5w9Ho9L9kmKonrwF9RJlW6BxT1PVv/agBHQ==}
-    engines: {node: '>=16.9.0'}
 
   hono@4.12.0:
     resolution: {integrity: sha512-NekXntS5M94pUfiVZ8oXXK/kkri+5WpX2/Ik+LVsl+uvw+soj4roXIsPqO+XsWrAw20mOzaXOZf3Q7PfB9A/IA==}
@@ -2453,8 +2449,6 @@ snapshots:
       function-bind: 1.1.2
 
   he@1.2.0: {}
-
-  hono@4.11.9: {}
 
   hono@4.12.0: {}
 

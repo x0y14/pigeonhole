@@ -47,6 +47,9 @@ export function generateVirtualModuleTypes(): string {
     lines.push(
         "  export const components: Record<string, (props: Record<string, unknown>, children: string) => string | Promise<string>>;",
     )
+    lines.push(
+        '  export const propsSchemas: Record<string, import("@pigeonhole/render").PropsSchema>;',
+    )
     lines.push("}")
     lines.push("")
     lines.push('declare module "virtual:pigeonhole/client" {')
