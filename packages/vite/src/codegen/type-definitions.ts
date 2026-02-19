@@ -50,6 +50,8 @@ export function generateVirtualModuleTypes(): string {
     lines.push(
         '  export const propsSchemas: Record<string, import("@pigeonhole/render").PropsSchema>;',
     )
+    lines.push('  export const hydrateComponents: Map<string, "eager" | "lazy" | "client-only">;')
+    lines.push("  export const islandTagNames: Record<string, string>;")
     lines.push("}")
     lines.push("")
     lines.push('declare module "virtual:pigeonhole/client" {')

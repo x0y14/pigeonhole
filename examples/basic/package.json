@@ -12,6 +12,7 @@
         "@lit-labs/ssr": "^4.0.0",
         "@lit-labs/ssr-client": "^1.1.8",
         "@pigeonhole/hono": "workspace:*",
+        "@pigeonhole/render": "workspace:*",
         "@pigeonhole/vite": "workspace:*",
         "hono": "^4.12.0",
         "lit": "^3.3.2"

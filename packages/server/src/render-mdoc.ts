@@ -42,7 +42,11 @@ export async function renderMdoc(
                     }
                 }
             }
-            // 単純な deny パターン（ワイルドカードなし）を render: false として注入
+            // 単純な deny パターン（ワイルドカードなし）を render: false として注入する。
+            // Markdoc の attributes 定義は具体的な属性名を要求するため、
+            // ワイルドカードパターン（例: "on*"）はここでは定義できない。
+            // ワイルドカードを含むパターンは Render 層（props-filter.ts の
+            // matchesDenyPattern）で包括的にチェックされる。
             if (options.denyPatterns) {
                 for (const pattern of options.denyPatterns) {
                     if (!pattern.includes("*")) {

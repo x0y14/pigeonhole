@@ -1,5 +1,9 @@
 import { test, assert } from "vitest"
-import { Tag, type RenderableTreeNode } from "@markdoc/markdoc"
+import Markdoc from "@markdoc/markdoc"
+import type { RenderableTreeNode } from "@markdoc/markdoc"
+
+type Tag = InstanceType<typeof Markdoc.Tag>
+const { Tag } = Markdoc
 import { renderToHtml } from "./render"
 import type { RenderOptions } from "../types"
 

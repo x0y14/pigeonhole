@@ -1,4 +1,8 @@
-import { Tag, type RenderableTreeNode } from "@markdoc/markdoc"
+import Markdoc from "@markdoc/markdoc"
+import type { RenderableTreeNode } from "@markdoc/markdoc"
+
+type Tag = InstanceType<typeof Markdoc.Tag>
+const { Tag } = Markdoc
 import { filterProps } from "../props/index"
 import { createRenderContext, generateIslandId, wrapIslandHtml } from "../island/island-marker"
 import type { RenderContext } from "../island/island-marker"

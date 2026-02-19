@@ -1,4 +1,5 @@
-export { Tag } from "@markdoc/markdoc"
+import Markdoc from "@markdoc/markdoc"
+export const Tag = Markdoc.Tag
 export type { RenderableTreeNode } from "@markdoc/markdoc"
 
 // props

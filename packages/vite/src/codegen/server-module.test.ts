@@ -30,6 +30,9 @@ test("ComponentInfo からサーバー仮想モジュールを生成する", () 
     assert.include(result, "export const propsSchemas = {")
     assert.include(result, '  Card: {"title":{"type":"string","optional":false}},')
     assert.include(result, "  Footer: {},")
+    // hydrate 対象がないので空
+    assert.include(result, "export const hydrateComponents = new Map([")
+    assert.include(result, "export const islandTagNames = {")
 })
 
 // Lit コンポーネント（customElementTagName あり）のテンプレート関数生成
@@ -216,6 +219,44 @@ test("client-only と eager が混在する場合に正しく生成する", () =
     // client-only はスタブ
     assert.include(result, 'const BrowserInfo = () => "";')
     assert.notInclude(result, 'import "/project/src/components/BrowserInfo.mdoc.tsx";')
+})
+
+// hydrateComponents と islandTagNames のエクスポート
+test("hydrateComponents と islandTagNames をエクスポートする", () => {
+    const components: ComponentInfo[] = [
+        {
+            filePath: "/project/src/components/Counter.mdoc.tsx",
+            tagName: "Counter",
+            hydrateMode: "eager",
+            customElementTagName: "ph-counter",
+            propsSchema: { count: { type: "number", optional: false } },
+        },
+        {
+            filePath: "/project/src/components/Slider.mdoc.tsx",
+            tagName: "Slider",
+            hydrateMode: "lazy",
+            customElementTagName: "ph-slider",
+            propsSchema: {},
+        },
+        {
+            filePath: "/project/src/components/Card.mdoc.tsx",
+            tagName: "Card",
+            hydrateMode: "none",
+            customElementTagName: null,
+            propsSchema: {},
+        },
+    ]
+
+    const result = generateServerModule(components)
+    // hydrateComponents: none 以外のみ含まれる
+    assert.include(result, "export const hydrateComponents = new Map([")
+    assert.include(result, '  ["Counter", "eager"],')
+    assert.include(result, '  ["Slider", "lazy"],')
+    assert.notInclude(result, '["Card"')
+    // islandTagNames: hydrate 対象の Lit コンポーネントのみ
+    assert.include(result, "export const islandTagNames = {")
+    assert.include(result, '  "Counter": "ph-counter",')
+    assert.include(result, '  "Slider": "ph-slider",')
 })
 
 // 空のコンポーネントリスト

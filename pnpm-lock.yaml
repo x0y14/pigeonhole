@@ -38,6 +38,9 @@ importers:
       '@pigeonhole/hono':
         specifier: workspace:*
         version: link:../../packages/hono
+      '@pigeonhole/render':
+        specifier: workspace:*
+        version: link:../../packages/render
       '@pigeonhole/vite':
         specifier: workspace:*
         version: link:../../packages/vite

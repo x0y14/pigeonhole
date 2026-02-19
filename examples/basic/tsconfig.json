@@ -9,7 +9,7 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "noEmit": true,
-        "types": ["vite/client", "@pigeonhole/vite/virtual"]
+        "types": ["vite/client"]
     },
-    "include": ["src", ".pigeonhole"]
+    "include": ["src", ".pigeonhole/**/*.d.ts"]
 }

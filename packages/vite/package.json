@@ -4,8 +4,7 @@
     "license": "MIT",
     "files": [
         "dist",
-        "src",
-        "virtual.d.ts"
+        "src"
     ],
     "type": "module",
     "exports": {
@@ -13,9 +12,6 @@
             "types": "./dist/index.d.ts",
             "development": "./src/index.ts",
             "default": "./dist/index.js"
-        },
-        "./virtual": {
-            "types": "./virtual.d.ts"
         }
     },
     "publishConfig": {
