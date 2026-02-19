@@ -4,11 +4,12 @@ import { renderToHtml } from "@pigeonhole/render"
 import type { RenderOptions } from "@pigeonhole/render"
 import type { RenderMdocOptions, RenderPageResult } from "./types"
 
-const MARKDOC_TYPE_MAP: Record<string, BooleanConstructor | NumberConstructor | StringConstructor> = {
-    string: String,
-    number: Number,
-    boolean: Boolean,
-}
+const MARKDOC_TYPE_MAP: Record<string, BooleanConstructor | NumberConstructor | StringConstructor> =
+    {
+        string: String,
+        number: Number,
+        boolean: Boolean,
+    }
 
 /**
  * Markdoc ソース文字列を HTML にレンダリングする
@@ -27,7 +28,13 @@ export async function renderMdoc(
     if (options.components) {
         for (const name of Object.keys(options.components)) {
             const schema = options.propsSchemas?.[name]
-            const attributes: Record<string, { type: BooleanConstructor | NumberConstructor | StringConstructor; render?: boolean }> = {}
+            const attributes: Record<
+                string,
+                {
+                    type: BooleanConstructor | NumberConstructor | StringConstructor
+                    render?: boolean
+                }
+            > = {}
             if (schema) {
                 for (const [key, def] of Object.entries(schema)) {
                     if (key !== "children") {

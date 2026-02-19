@@ -63,9 +63,7 @@ function generateLitSsrFunction(
     propNames: string[],
     hydrateMode: HydrateMode,
 ): string {
-    const propBindings = propNames
-        .map((name) => `\n    .${name}=\${props.${name}}`)
-        .join("")
+    const propBindings = propNames.map((name) => `\n    .${name}=\${props.${name}}`).join("")
 
     return [
         `const ${componentName} = async (props, children) => {`,

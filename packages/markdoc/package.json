@@ -1,19 +1,25 @@
 {
     "name": "@pigeonhole/markdoc",
     "version": "0.0.0",
-    "type": "module",
     "description": "",
     "keywords": [],
     "license": "MIT",
     "author": "",
+    "files": [
+        "dist",
+        "src"
+    ],
+    "type": "module",
     "exports": {
         ".": {
-            "development": "./src/index.ts",
             "types": "./dist/index.d.ts",
+            "development": "./src/index.ts",
             "default": "./dist/index.js"
         }
     },
-    "files": ["dist", "src"],
+    "publishConfig": {
+        "access": "public"
+    },
     "scripts": {
         "build": "vite build",
         "clean": "rm -rf dist",
@@ -28,9 +34,6 @@
         "@types/js-yaml": "^4.0.9",
         "typescript": "^5.9.3",
         "vitest": "^4.0.18"
-    },
-    "publishConfig": {
-        "access": "public"
     },
     "packageManager": "pnpm@10.28.1"
 }

@@ -25,7 +25,10 @@ const DEFAULT_LIMIT = 20
 app.post("/api/users", async (c) => {
     const body = await c.req.json<{ username?: string; password?: string }>()
     if (!body.username || !body.password) {
-        return c.json({ error: { code: "VALIDATION_ERROR", message: "username and password are required" } }, 400)
+        return c.json(
+            { error: { code: "VALIDATION_ERROR", message: "username and password are required" } },
+            400,
+        )
     }
 
     if (findUserByUsername(body.username)) {
@@ -44,17 +47,26 @@ app.post("/api/users", async (c) => {
 app.post("/api/sessions", async (c) => {
     const body = await c.req.json<{ username?: string; password?: string }>()
     if (!body.username || !body.password) {
-        return c.json({ error: { code: "VALIDATION_ERROR", message: "username and password are required" } }, 400)
+        return c.json(
+            { error: { code: "VALIDATION_ERROR", message: "username and password are required" } },
+            400,
+        )
     }
 
     const user = findUserByUsername(body.username)
     if (!user) {
-        return c.json({ error: { code: "INVALID_CREDENTIALS", message: "Invalid credentials" } }, 401)
+        return c.json(
+            { error: { code: "INVALID_CREDENTIALS", message: "Invalid credentials" } },
+            401,
+        )
     }
 
     const hashedPassword = await hashPassword(body.password)
     if (user.password !== hashedPassword) {
-        return c.json({ error: { code: "INVALID_CREDENTIALS", message: "Invalid credentials" } }, 401)
+        return c.json(
+            { error: { code: "INVALID_CREDENTIALS", message: "Invalid credentials" } },
+            401,
+        )
     }
 
     const token = crypto.randomUUID()
@@ -74,7 +86,9 @@ app.get("/api/posts", optionalAuthMiddleware, (c) => {
     const userId = c.get("userId") as string | undefined
     const limitParam = c.req.query("limit")
     const cursor = c.req.query("cursor")
-    const limit = limitParam ? Math.max(1, Math.min(100, Number(limitParam) || DEFAULT_LIMIT)) : DEFAULT_LIMIT
+    const limit = limitParam
+        ? Math.max(1, Math.min(100, Number(limitParam) || DEFAULT_LIMIT))
+        : DEFAULT_LIMIT
 
     const { posts, hasMore } = getPosts(limit, cursor)
 
@@ -103,16 +117,20 @@ app.post("/api/posts", authMiddleware, async (c) => {
 
     const post = createPost(crypto.randomUUID(), userId, body.content)
     const author = findUserById(userId)
-    return c.json({
-        id: post.id,
-        content: post.content,
-        username: author?.username ?? "unknown",
-        createdAt: post.createdAt.toISOString(),
-        likes: 0,
-        likedByMe: false,
-    }, 201, {
-        Location: `/api/posts/${post.id}`,
-    })
+    return c.json(
+        {
+            id: post.id,
+            content: post.content,
+            username: author?.username ?? "unknown",
+            createdAt: post.createdAt.toISOString(),
+            likes: 0,
+            likedByMe: false,
+        },
+        201,
+        {
+            Location: `/api/posts/${post.id}`,
+        },
+    )
 })
 
 // --- Likes ---

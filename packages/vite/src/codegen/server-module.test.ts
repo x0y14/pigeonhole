@@ -181,7 +181,7 @@ test("client-only Lit コンポーネントはサーバー import なしでス�
     const result = generateServerModule(components)
     // サーバー import が生成されない
     assert.notInclude(result, 'import "/project/src/components/BrowserInfo.mdoc.tsx";')
-    assert.notInclude(result, 'import { BrowserInfo }')
+    assert.notInclude(result, "import { BrowserInfo }")
     // スタブ関数が生成される
     assert.include(result, 'const BrowserInfo = () => "";')
     // components マップに含まれる

@@ -25,7 +25,10 @@ export const optionalAuthMiddleware = createMiddleware<Env>(async (c, next) => {
 export const authMiddleware = createMiddleware<Env>(async (c, next) => {
     const header = c.req.header("Authorization")
     if (!header?.startsWith("Bearer ")) {
-        return c.json({ error: { code: "AUTHORIZATION_REQUIRED", message: "Authorization required" } }, 401)
+        return c.json(
+            { error: { code: "AUTHORIZATION_REQUIRED", message: "Authorization required" } },
+            401,
+        )
     }
 
     const token = header.slice(7)

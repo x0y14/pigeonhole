@@ -197,7 +197,10 @@ describe("GET /api/posts", () => {
     it("returns empty data when no posts", async () => {
         const res = await app.request("/api/posts")
         expect(res.status).toBe(200)
-        const json = (await res.json()) as { data: unknown[]; pagination: { nextCursor: string | null; hasMore: boolean } }
+        const json = (await res.json()) as {
+            data: unknown[]
+            pagination: { nextCursor: string | null; hasMore: boolean }
+        }
         expect(json.data).toEqual([])
         expect(json.pagination.hasMore).toBe(false)
     })
@@ -295,7 +298,10 @@ describe("GET /api/posts (pagination)", () => {
         }
 
         const res = await app.request("/api/posts?limit=2")
-        const json = (await res.json()) as { data: unknown[]; pagination: { nextCursor: string | null; hasMore: boolean } }
+        const json = (await res.json()) as {
+            data: unknown[]
+            pagination: { nextCursor: string | null; hasMore: boolean }
+        }
         expect(json.data).toHaveLength(2)
         expect(json.pagination.hasMore).toBe(true)
         expect(json.pagination.nextCursor).toBeDefined()
@@ -312,10 +318,18 @@ describe("GET /api/posts (pagination)", () => {
         }
 
         const firstPage = await app.request("/api/posts?limit=2")
-        const firstJson = (await firstPage.json()) as { data: { content: string }[]; pagination: { nextCursor: string } }
+        const firstJson = (await firstPage.json()) as {
+            data: { content: string }[]
+            pagination: { nextCursor: string }
+        }
 
-        const secondPage = await app.request(`/api/posts?limit=2&cursor=${firstJson.pagination.nextCursor}`)
-        const secondJson = (await secondPage.json()) as { data: { content: string }[]; pagination: { hasMore: boolean } }
+        const secondPage = await app.request(
+            `/api/posts?limit=2&cursor=${firstJson.pagination.nextCursor}`,
+        )
+        const secondJson = (await secondPage.json()) as {
+            data: { content: string }[]
+            pagination: { hasMore: boolean }
+        }
         expect(secondJson.data).toHaveLength(2)
         // No overlap with first page
         const firstContents = firstJson.data.map((p) => p.content)
@@ -332,7 +346,10 @@ describe("GET /api/posts (pagination)", () => {
         await postAs(token, "only-post")
 
         const res = await app.request("/api/posts?limit=10")
-        const json = (await res.json()) as { data: unknown[]; pagination: { nextCursor: string | null; hasMore: boolean } }
+        const json = (await res.json()) as {
+            data: unknown[]
+            pagination: { nextCursor: string | null; hasMore: boolean }
+        }
         expect(json.data).toHaveLength(1)
         expect(json.pagination.hasMore).toBe(false)
         expect(json.pagination.nextCursor).toBeNull()
@@ -359,7 +376,10 @@ describe("GET /api/posts (pagination)", () => {
     // 期待する動作: 空配列、hasMore=false、nextCursor=null
     it("returns empty data when no posts", async () => {
         const res = await app.request("/api/posts?limit=5")
-        const json = (await res.json()) as { data: unknown[]; pagination: { nextCursor: string | null; hasMore: boolean } }
+        const json = (await res.json()) as {
+            data: unknown[]
+            pagination: { nextCursor: string | null; hasMore: boolean }
+        }
         expect(json.data).toEqual([])
         expect(json.pagination.hasMore).toBe(false)
         expect(json.pagination.nextCursor).toBeNull()

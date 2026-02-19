@@ -2,11 +2,11 @@
     "name": "@pigeonhole/root",
     "version": "0.0.0",
     "private": true,
-    "type": "module",
     "description": "",
     "keywords": [],
     "license": "MIT",
     "author": "",
+    "type": "module",
     "scripts": {
         "build": "pnpm -r run build",
         "clean": "pnpm -r run clean",

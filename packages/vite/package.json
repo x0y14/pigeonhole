@@ -1,19 +1,26 @@
 {
     "name": "@pigeonhole/vite",
     "version": "0.0.0",
-    "type": "module",
     "license": "MIT",
+    "files": [
+        "dist",
+        "src",
+        "virtual.d.ts"
+    ],
+    "type": "module",
     "exports": {
         ".": {
-            "development": "./src/index.ts",
             "types": "./dist/index.d.ts",
+            "development": "./src/index.ts",
             "default": "./dist/index.js"
         },
         "./virtual": {
             "types": "./virtual.d.ts"
         }
     },
-    "files": ["dist", "src", "virtual.d.ts"],
+    "publishConfig": {
+        "access": "public"
+    },
     "scripts": {
         "build": "vite build",
         "clean": "rm -rf dist",
@@ -34,9 +41,6 @@
     },
     "peerDependencies": {
         "vite": ">=6.0.0"
-    },
-    "publishConfig": {
-        "access": "public"
     },
     "packageManager": "pnpm@10.28.1"
 }

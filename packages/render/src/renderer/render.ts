@@ -1,10 +1,6 @@
 import { Tag, type RenderableTreeNode } from "@markdoc/markdoc"
 import { filterProps } from "../props/index"
-import {
-    createRenderContext,
-    generateIslandId,
-    wrapIslandHtml,
-} from "../island/island-marker"
+import { createRenderContext, generateIslandId, wrapIslandHtml } from "../island/island-marker"
 import type { RenderContext } from "../island/island-marker"
 import { escapeHtml } from "./escape"
 import { serializeAttributes } from "./serialize-attributes"

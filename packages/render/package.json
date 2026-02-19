@@ -1,34 +1,50 @@
 {
     "name": "@pigeonhole/render",
     "version": "0.0.0",
-    "type": "module",
     "description": "",
     "keywords": [],
     "license": "MIT",
     "author": "",
+    "files": [
+        "dist",
+        "src"
+    ],
+    "type": "module",
     "exports": {
         ".": {
-            "development": "./src/index.ts",
             "types": "./dist/index.d.ts",
+            "development": "./src/index.ts",
             "default": "./dist/index.js"
         },
         "./client": {
-            "development": "./src/client/index.ts",
             "types": "./dist/client/index.d.ts",
+            "development": "./src/client/index.ts",
             "default": "./dist/client/index.js"
         },
         "./lit": {
-            "development": "./src/lit/index.ts",
             "types": "./dist/lit/index.d.ts",
+            "development": "./src/lit/index.ts",
             "default": "./dist/lit/index.js"
         }
     },
-    "files": ["dist", "src"],
+    "publishConfig": {
+        "access": "public"
+    },
     "scripts": {
         "build": "vite build",
         "clean": "rm -rf dist",
         "typecheck": "tsc --noEmit",
         "test": "pnpm vitest run"
+    },
+    "dependencies": {
+        "@markdoc/markdoc": "^0.5.4"
+    },
+    "devDependencies": {
+        "@lit-labs/ssr": "^4.0.0",
+        "jsdom": "^28.1.0",
+        "lit": "^3.3.2",
+        "typescript": "^5.9.3",
+        "vitest": "^4.0.18"
     },
     "peerDependencies": {
         "@lit-labs/ssr": ">=1.0.0",
@@ -42,19 +58,6 @@
         "lit": {
             "optional": true
         }
-    },
-    "dependencies": {
-        "@markdoc/markdoc": "^0.5.4"
-    },
-    "devDependencies": {
-        "@lit-labs/ssr": "^4.0.0",
-        "jsdom": "^28.1.0",
-        "lit": "^3.3.2",
-        "typescript": "^5.9.3",
-        "vitest": "^4.0.18"
-    },
-    "publishConfig": {
-        "access": "public"
     },
     "packageManager": "pnpm@10.28.1"
 }
