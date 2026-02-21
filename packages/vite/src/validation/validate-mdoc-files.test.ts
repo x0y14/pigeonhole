@@ -24,12 +24,12 @@ test("存在する import パスは検証を通過する", () => {
     try {
         const componentsDir = join(root, "src/components")
         mkdirSync(componentsDir, { recursive: true })
-        writeFileSync(join(componentsDir, "Card.mdoc.tsx"), "")
+        writeFileSync(join(componentsDir, "Card.tsx"), "")
 
         const mdocFiles: MdocFileInfo[] = [
             {
                 filePath: join(root, "src/pages/index.mdoc"),
-                imports: [{ path: "src/components/Card.mdoc.tsx" }],
+                imports: [{ path: "src/components/Card.tsx" }],
                 inputs: [],
                 tagAttributes: {},
             },
@@ -50,7 +50,7 @@ test("存在しない import パスはエラーを投げる", () => {
         const mdocFiles: MdocFileInfo[] = [
             {
                 filePath: join(root, "src/pages/index.mdoc"),
-                imports: [{ path: "src/components/Missing.mdoc.tsx" }],
+                imports: [{ path: "src/components/Missing.tsx" }],
                 inputs: [],
                 tagAttributes: {},
             },

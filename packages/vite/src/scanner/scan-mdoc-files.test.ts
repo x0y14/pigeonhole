@@ -27,7 +27,7 @@ test("*.mdoc ファイルを走査して MdocFileInfo を返す", async () => {
             join(pagesDir, "index.mdoc"),
             `---
 - import:
-    - "components/Card.mdoc.tsx"
+    - "components/Card.tsx"
 ---
 
 # Hello
@@ -41,7 +41,7 @@ content
         const results = await scanMdocFiles(root, "src/pages")
         assert.equal(results.length, 1)
         assert.equal(results[0].imports.length, 1)
-        assert.equal(results[0].imports[0].path, "components/Card.mdoc.tsx")
+        assert.equal(results[0].imports[0].path, "components/Card.tsx")
     } finally {
         rmSync(root, { recursive: true, force: true })
     }
@@ -87,7 +87,7 @@ test("タグの使用属性を AST から収集する", async () => {
             join(pagesDir, "index.mdoc"),
             `---
 - import:
-    - "components/Card.mdoc.tsx"
+    - "components/Card.tsx"
 ---
 
 {% Card title="hello" count=3 %}

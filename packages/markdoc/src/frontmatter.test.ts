@@ -12,14 +12,14 @@ test("importを抽出できる", () => {
     const source = `---
 - import:
     - "./components/shared/Button.mdoc"
-    - "./components/shared/TextForm.mdoc.tsx"
+    - "./components/shared/TextForm.tsx"
 ---
 # Hello`
     const ast = parse(source)
     const frontmatter = filterFrontmatter(ast)
     assert.deepEqual(frontmatter.imports, [
         { path: "./components/shared/Button.mdoc" },
-        { path: "./components/shared/TextForm.mdoc.tsx" },
+        { path: "./components/shared/TextForm.tsx" },
     ])
 })
 

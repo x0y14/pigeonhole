@@ -6,7 +6,7 @@ import type { ComponentInfo } from "../scanner/types"
 test("island コンポーネントからクライアント仮想モジュールを生成する", () => {
     const islands: ComponentInfo[] = [
         {
-            filePath: "/project/src/components/Counter.mdoc.tsx",
+            filePath: "/project/src/components/Counter.tsx",
             tagName: "Counter",
             hydrateMode: "eager",
             customElementTagName: "ph-counter",
@@ -25,7 +25,7 @@ test("island コンポーネントからクライアント仮想モジュール�
         l.includes("@lit-labs/ssr-client/lit-element-hydrate-support.js"),
     )
     const restoreIndex = lines.findIndex((l) => l.includes("restoreIslandProps"))
-    const importIndex = lines.findIndex((l) => l.includes("Counter.mdoc.tsx"))
+    const importIndex = lines.findIndex((l) => l.includes("Counter.tsx"))
 
     assert.isAbove(hydrateIndex, -1)
     assert.isAbove(restoreIndex, hydrateIndex)
@@ -36,7 +36,7 @@ test("island コンポーネントからクライアント仮想モジュール�
 test("island マップに tagName と customElementTagName のマッピングを含む", () => {
     const islands: ComponentInfo[] = [
         {
-            filePath: "/project/src/components/Counter.mdoc.tsx",
+            filePath: "/project/src/components/Counter.tsx",
             tagName: "Counter",
             hydrateMode: "eager",
             customElementTagName: "ph-counter",
@@ -52,7 +52,7 @@ test("island マップに tagName と customElementTagName のマッピングを
 test("customElementTagName が null の island は islands マップに含めない", () => {
     const islands: ComponentInfo[] = [
         {
-            filePath: "/project/src/components/Widget.mdoc.tsx",
+            filePath: "/project/src/components/Widget.tsx",
             tagName: "Widget",
             hydrateMode: "eager",
             customElementTagName: null,
@@ -61,7 +61,7 @@ test("customElementTagName が null の island は islands マップに含めな
     ]
 
     const result = generateClientModule(islands)
-    assert.include(result, 'import "/project/src/components/Widget.mdoc.tsx";')
+    assert.include(result, 'import "/project/src/components/Widget.tsx";')
     assert.notInclude(result, '"Widget"')
 })
 
@@ -69,7 +69,7 @@ test("customElementTagName が null の island は islands マップに含めな
 test("lazy island は observeLazyIslands + dynamic import で生成される", () => {
     const islands: ComponentInfo[] = [
         {
-            filePath: "/project/src/components/Slider.mdoc.tsx",
+            filePath: "/project/src/components/Slider.tsx",
             tagName: "Slider",
             hydrateMode: "lazy",
             customElementTagName: "ph-slider",
@@ -80,10 +80,10 @@ test("lazy island は observeLazyIslands + dynamic import で生成される", (
     const result = generateClientModule(islands)
 
     // eager import がない
-    assert.notInclude(result, 'import "/project/src/components/Slider.mdoc.tsx";')
+    assert.notInclude(result, 'import "/project/src/components/Slider.tsx";')
     // observeLazyIslands が使われている
     assert.include(result, "observeLazyIslands")
-    assert.include(result, '"ph-slider": () => import("/project/src/components/Slider.mdoc.tsx")')
+    assert.include(result, '"ph-slider": () => import("/project/src/components/Slider.tsx")')
     // island マップには含まれる
     assert.include(result, '"Slider": "ph-slider"')
 })
@@ -92,14 +92,14 @@ test("lazy island は observeLazyIslands + dynamic import で生成される", (
 test("eager と lazy が混在する場合に正しく分離される", () => {
     const islands: ComponentInfo[] = [
         {
-            filePath: "/project/src/components/Counter.mdoc.tsx",
+            filePath: "/project/src/components/Counter.tsx",
             tagName: "Counter",
             hydrateMode: "eager",
             customElementTagName: "ph-counter",
             propsSchema: {},
         },
         {
-            filePath: "/project/src/components/Slider.mdoc.tsx",
+            filePath: "/project/src/components/Slider.tsx",
             tagName: "Slider",
             hydrateMode: "lazy",
             customElementTagName: "ph-slider",
@@ -110,9 +110,9 @@ test("eager と lazy が混在する場合に正しく分離される", () => {
     const result = generateClientModule(islands)
 
     // eager は通常 import
-    assert.include(result, 'import "/project/src/components/Counter.mdoc.tsx";')
+    assert.include(result, 'import "/project/src/components/Counter.tsx";')
     // lazy は dynamic import
-    assert.include(result, '"ph-slider": () => import("/project/src/components/Slider.mdoc.tsx")')
+    assert.include(result, '"ph-slider": () => import("/project/src/components/Slider.tsx")')
     // 両方 island マップに含まれる
     assert.include(result, '"Counter": "ph-counter"')
     assert.include(result, '"Slider": "ph-slider"')
@@ -122,7 +122,7 @@ test("eager と lazy が混在する場合に正しく分離される", () => {
 test("client-only island は即座 import で生成される", () => {
     const islands: ComponentInfo[] = [
         {
-            filePath: "/project/src/components/BrowserInfo.mdoc.tsx",
+            filePath: "/project/src/components/BrowserInfo.tsx",
             tagName: "BrowserInfo",
             hydrateMode: "client-only",
             customElementTagName: "ph-browser-info",
@@ -133,7 +133,7 @@ test("client-only island は即座 import で生成される", () => {
     const result = generateClientModule(islands)
 
     // 即座 import が生成される
-    assert.include(result, 'import "/project/src/components/BrowserInfo.mdoc.tsx";')
+    assert.include(result, 'import "/project/src/components/BrowserInfo.tsx";')
     // observeLazyIslands に含まれない
     assert.notInclude(result, "observeLazyIslands")
     // island マップに含まれる
@@ -144,21 +144,21 @@ test("client-only island は即座 import で生成される", () => {
 test("eager, lazy, client-only が混在する場合に正しく分離される", () => {
     const islands: ComponentInfo[] = [
         {
-            filePath: "/project/src/components/Counter.mdoc.tsx",
+            filePath: "/project/src/components/Counter.tsx",
             tagName: "Counter",
             hydrateMode: "eager",
             customElementTagName: "ph-counter",
             propsSchema: {},
         },
         {
-            filePath: "/project/src/components/Slider.mdoc.tsx",
+            filePath: "/project/src/components/Slider.tsx",
             tagName: "Slider",
             hydrateMode: "lazy",
             customElementTagName: "ph-slider",
             propsSchema: {},
         },
         {
-            filePath: "/project/src/components/BrowserInfo.mdoc.tsx",
+            filePath: "/project/src/components/BrowserInfo.tsx",
             tagName: "BrowserInfo",
             hydrateMode: "client-only",
             customElementTagName: "ph-browser-info",
@@ -169,11 +169,11 @@ test("eager, lazy, client-only が混在する場合に正しく分離される"
     const result = generateClientModule(islands)
 
     // eager は通常 import
-    assert.include(result, 'import "/project/src/components/Counter.mdoc.tsx";')
+    assert.include(result, 'import "/project/src/components/Counter.tsx";')
     // client-only も通常 import
-    assert.include(result, 'import "/project/src/components/BrowserInfo.mdoc.tsx";')
+    assert.include(result, 'import "/project/src/components/BrowserInfo.tsx";')
     // lazy は dynamic import
-    assert.include(result, '"ph-slider": () => import("/project/src/components/Slider.mdoc.tsx")')
+    assert.include(result, '"ph-slider": () => import("/project/src/components/Slider.tsx")')
     // 全て island マップに含まれる
     assert.include(result, '"Counter": "ph-counter"')
     assert.include(result, '"Slider": "ph-slider"')

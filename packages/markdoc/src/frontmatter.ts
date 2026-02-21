@@ -4,7 +4,7 @@ import type { Node } from "markdecl"
 // ---
 // - import
 //     - "./components/shared/Button.mdoc"
-//     - "./components/shared/TextForm.mdoc.tsx"
+//     - "./components/shared/TextForm.tsx"
 // ---
 export type ImportSyntax = {
     path: string

@@ -17,14 +17,14 @@ function createTempDir(): string {
 }
 
 // 基本的なコンポーネントスキャン
-test("*.mdoc.tsx ファイルを走査して ComponentInfo を返す", async () => {
+test("*.tsx ファイルを走査して ComponentInfo を返す", async () => {
     const root = createTempDir()
     try {
         const componentsDir = join(root, "src/components")
         mkdirSync(componentsDir, { recursive: true })
 
         writeFileSync(
-            join(componentsDir, "Card.mdoc.tsx"),
+            join(componentsDir, "Card.tsx"),
             `interface CardProps {
     title: string;
 }
@@ -54,7 +54,7 @@ test("@customElement のみのコンポーネントは SSR-only Lit として検
         mkdirSync(componentsDir, { recursive: true })
 
         writeFileSync(
-            join(componentsDir, "Counter.mdoc.tsx"),
+            join(componentsDir, "Counter.tsx"),
             `interface CounterProps {
     count: number;
 }
@@ -82,7 +82,7 @@ test("@customElement + static hydrate = 'eager' のコンポーネントを hydr
         mkdirSync(componentsDir, { recursive: true })
 
         writeFileSync(
-            join(componentsDir, "Counter.mdoc.tsx"),
+            join(componentsDir, "Counter.tsx"),
             `interface CounterProps {
     count: number;
 }
@@ -112,7 +112,7 @@ test("サブディレクトリを再帰的に走査する", async () => {
         mkdirSync(subDir, { recursive: true })
 
         writeFileSync(
-            join(subDir, "Button.mdoc.tsx"),
+            join(subDir, "Button.tsx"),
             `interface ButtonProps {
     label: string;
 }
@@ -139,7 +139,7 @@ test("export 命名規約に違反するファイルはエラーを投げる", a
         mkdirSync(componentsDir, { recursive: true })
 
         writeFileSync(
-            join(componentsDir, "Card.mdoc.tsx"),
+            join(componentsDir, "Card.tsx"),
             `export function WrongName(props: {}, children: string): string {
     return "<div>" + children + "</div>";
 }

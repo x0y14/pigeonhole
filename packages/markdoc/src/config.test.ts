@@ -12,7 +12,7 @@ test("importsがvariablesに含まれる", () => {
     const source = `---
 - import:
     - "./components/shared/Button.mdoc"
-    - "./components/shared/TextForm.mdoc.tsx"
+    - "./components/shared/TextForm.tsx"
 ---
 # Hello`
     const ast = parse(source)
@@ -20,7 +20,7 @@ test("importsがvariablesに含まれる", () => {
     assert.deepEqual(config.variables, {
         imports: [
             { path: "./components/shared/Button.mdoc" },
-            { path: "./components/shared/TextForm.mdoc.tsx" },
+            { path: "./components/shared/TextForm.tsx" },
         ],
     })
 })
