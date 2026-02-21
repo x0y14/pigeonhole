@@ -15,8 +15,7 @@ function validateExportName(tagName: string, exportName: string): boolean {
 
 // 単一コンポーネントファイルをスキャンする
 function scanComponentFile(filePath: string, source: string): ComponentInfo {
-    const fileName = basename(filePath)
-    const tagName = fileName.replace(".tsx", "")
+    const tagName = basename(filePath, ".tsx")
 
     const exportNames = extractExportNames(source)
     const hasValidExport = exportNames.some((name) => validateExportName(tagName, name))
