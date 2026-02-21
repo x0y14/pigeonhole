@@ -6,7 +6,7 @@ import type { ComponentInfo } from "../scanner/types"
 test("ComponentInfo から types.d.ts の内容を生成する", () => {
     const components: ComponentInfo[] = [
         {
-            filePath: "/project/src/components/Card.mdoc.tsx",
+            filePath: "/project/src/components/Card.tsx",
             tagName: "Card",
             hydrateMode: "none",
             customElementTagName: null,
@@ -28,7 +28,7 @@ test("ComponentInfo から types.d.ts の内容を生成する", () => {
 test("propsSchema が空のコンポーネントは interface を生成しない", () => {
     const components: ComponentInfo[] = [
         {
-            filePath: "/project/src/components/Footer.mdoc.tsx",
+            filePath: "/project/src/components/Footer.tsx",
             tagName: "Footer",
             hydrateMode: "none",
             customElementTagName: null,

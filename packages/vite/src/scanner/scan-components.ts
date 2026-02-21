@@ -16,7 +16,7 @@ function validateExportName(tagName: string, exportName: string): boolean {
 // 単一コンポーネントファイルをスキャンする
 function scanComponentFile(filePath: string, source: string): ComponentInfo {
     const fileName = basename(filePath)
-    const tagName = fileName.replace(".mdoc.tsx", "")
+    const tagName = fileName.replace(".tsx", "")
 
     const exportNames = extractExportNames(source)
     const hasValidExport = exportNames.some((name) => validateExportName(tagName, name))
@@ -46,7 +46,7 @@ export async function scanComponents(root: string, dir: string): Promise<Compone
 
     let files: string[]
     try {
-        files = await glob(["**/*.mdoc.tsx"], { cwd: absoluteDir, absolute: true })
+        files = await glob(["**/*.tsx"], { cwd: absoluteDir, absolute: true })
     } catch {
         // ディレクトリが存在しない場合は空を返す
         return results
