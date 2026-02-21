@@ -1,5 +1,3 @@
-import type { PropsSchema } from "./props/props-filter"
-
 /**
  * サーバーコンポーネント関数の型
  *
@@ -15,9 +13,6 @@ export type ServerComponent = (
  */
 export interface RenderOptions {
     components?: Record<string, ServerComponent>
-    propsSchemas?: Record<string, PropsSchema>
-    denyPatterns?: string[]
-    authorAttrsMap?: Record<string, Set<string>>
     hydrateComponents?: Map<string, "eager" | "lazy" | "client-only">
     islandTagNames?: Record<string, string>
 }

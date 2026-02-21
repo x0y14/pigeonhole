@@ -27,9 +27,9 @@
         "test": "pnpm vitest run"
     },
     "dependencies": {
-        "markdecl": "^0.1.0",
         "@pigeonhole/markdoc": "workspace:^",
-        "@pigeonhole/render": "workspace:^"
+        "@pigeonhole/render": "workspace:^",
+        "markdecl": "^0.1.0"
     },
     "devDependencies": {
         "typescript": "^5.9.3",

@@ -11,8 +11,8 @@ test("ComponentInfo から types.d.ts の内容を生成する", () => {
             hydrateMode: "none",
             customElementTagName: null,
             propsSchema: {
-                title: { type: "string", optional: false },
-                count: { type: "number", optional: true },
+                title: { type: "string" },
+                count: { type: "number" },
             },
         },
     ]
@@ -21,7 +21,7 @@ test("ComponentInfo から types.d.ts の内容を生成する", () => {
     assert.include(result, "declare namespace Pigeonhole {")
     assert.include(result, "interface CardProps {")
     assert.include(result, "    title: string;")
-    assert.include(result, "    count?: number;")
+    assert.include(result, "    count: number;")
 })
 
 // props がないコンポーネント

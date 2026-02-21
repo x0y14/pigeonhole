@@ -76,7 +76,7 @@ export function pigeonhole(): Plugin {
 
                 const schema: PropsSchema = {}
                 for (const input of mdocComponent.inputs) {
-                    schema[input.variableName] = { type: "string", optional: false }
+                    schema[input.variableName] = { type: "string" }
                 }
                 componentSchemaMap.set(tagName, schema)
             }

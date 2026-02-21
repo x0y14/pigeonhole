@@ -71,7 +71,7 @@ test("存在しない import パスはエラーを投げる", () => {
 test("スキーマに宣言されていない属性はエラーを投げる", () => {
     const root = createTempDir()
     try {
-        const schema: PropsSchema = { title: { type: "string", optional: false } }
+        const schema: PropsSchema = { title: { type: "string" } }
         const componentSchemaMap = new Map<string, PropsSchema>()
         componentSchemaMap.set("Card", schema)
 
@@ -99,7 +99,7 @@ test("スキーマに宣言されていない属性はエラーを投げる", ()
 test("deny パターンに一致する属性はエラーを投げる", () => {
     const root = createTempDir()
     try {
-        const schema: PropsSchema = { class: { type: "string", optional: false } }
+        const schema: PropsSchema = { class: { type: "string" } }
         const componentSchemaMap = new Map<string, PropsSchema>()
         componentSchemaMap.set("Card", schema)
 
@@ -128,8 +128,8 @@ test("スキーマに宣言されている属性は検証を通過する", () =>
     const root = createTempDir()
     try {
         const schema: PropsSchema = {
-            title: { type: "string", optional: false },
-            count: { type: "number", optional: true },
+            title: { type: "string" },
+            count: { type: "number" },
         }
         const componentSchemaMap = new Map<string, PropsSchema>()
         componentSchemaMap.set("Card", schema)

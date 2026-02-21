@@ -10,7 +10,7 @@ test("ComponentInfo からサーバー仮想モジュールを生成する", () 
             tagName: "Card",
             hydrateMode: "none",
             customElementTagName: null,
-            propsSchema: { title: { type: "string", optional: false } },
+            propsSchema: { title: { type: "string" } },
         },
         {
             filePath: "/project/src/components/Footer.mdoc.tsx",
@@ -28,7 +28,7 @@ test("ComponentInfo からサーバー仮想モジュールを生成する", () 
     assert.include(result, "  Card,")
     assert.include(result, "  Footer,")
     assert.include(result, "export const propsSchemas = {")
-    assert.include(result, '  Card: {"title":{"type":"string","optional":false}},')
+    assert.include(result, '  Card: {"title":{"type":"string"}},')
     assert.include(result, "  Footer: {},")
     // hydrate 対象がないので空
     assert.include(result, "export const hydrateComponents = new Map([")
@@ -43,7 +43,7 @@ test("Lit コンポーネントのテンプレート関数を生成する", () =
             tagName: "Counter",
             hydrateMode: "eager",
             customElementTagName: "ph-counter",
-            propsSchema: { count: { type: "number", optional: false } },
+            propsSchema: { count: { type: "number" } },
         },
         {
             filePath: "/project/src/components/Card.mdoc.tsx",
@@ -82,9 +82,9 @@ test("複数の props のバインディングを生成する", () => {
             hydrateMode: "eager",
             customElementTagName: "ph-widget",
             propsSchema: {
-                title: { type: "string", optional: false },
-                count: { type: "number", optional: false },
-                active: { type: "boolean", optional: true },
+                title: { type: "string" },
+                count: { type: "number" },
+                active: { type: "boolean" },
             },
         },
     ]
@@ -137,7 +137,7 @@ test("SSR-only Lit コンポーネントは deferHydration: false で生成す�
             tagName: "Header",
             hydrateMode: "none",
             customElementTagName: "ph-header",
-            propsSchema: { title: { type: "string", optional: false } },
+            propsSchema: { title: { type: "string" } },
         },
     ]
 
@@ -160,7 +160,7 @@ test("lazy Lit コンポーネントは deferHydration: true で生成する", (
             tagName: "Slider",
             hydrateMode: "lazy",
             customElementTagName: "ph-slider",
-            propsSchema: { index: { type: "number", optional: false } },
+            propsSchema: { index: { type: "number" } },
         },
     ]
 
@@ -177,7 +177,7 @@ test("client-only Lit コンポーネントはサーバー import なしでス�
             tagName: "BrowserInfo",
             hydrateMode: "client-only",
             customElementTagName: "ph-browser-info",
-            propsSchema: { ua: { type: "string", optional: false } },
+            propsSchema: { ua: { type: "string" } },
         },
     ]
 
@@ -201,7 +201,7 @@ test("client-only と eager が混在する場合に正しく生成する", () =
             tagName: "Counter",
             hydrateMode: "eager",
             customElementTagName: "ph-counter",
-            propsSchema: { count: { type: "number", optional: false } },
+            propsSchema: { count: { type: "number" } },
         },
         {
             filePath: "/project/src/components/BrowserInfo.mdoc.tsx",
@@ -229,7 +229,7 @@ test("hydrateComponents と islandTagNames をエクスポートする", () => {
             tagName: "Counter",
             hydrateMode: "eager",
             customElementTagName: "ph-counter",
-            propsSchema: { count: { type: "number", optional: false } },
+            propsSchema: { count: { type: "number" } },
         },
         {
             filePath: "/project/src/components/Slider.mdoc.tsx",

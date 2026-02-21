@@ -7,11 +7,9 @@ import type { PropsSchema } from "@pigeonhole/render"
 export interface RenderMdocOptions {
     /** コンポーネント map */
     components?: Record<string, import("@pigeonhole/render").ServerComponent>
-    /** propsSchemas（@pigeonhole/render に委譲） */
+    /** propsSchemas（markdecl config 構築に使用） */
     propsSchemas?: Record<string, PropsSchema>
-    /** 著者属性 map（@pigeonhole/render に委譲） */
-    authorAttrsMap?: Record<string, Set<string>>
-    /** deny パターン（@pigeonhole/render に委譲） */
+    /** deny パターン（markdecl config 構築時に render: false を設定） */
     denyPatterns?: string[]
     /** ハイドレーション対象コンポーネント名とモードの Map */
     hydrateComponents?: Map<string, "eager" | "lazy" | "client-only">

@@ -12,9 +12,9 @@ interface CardProps {
 `
     const schema = extractPropsSchema(source, "CardProps")
     assert.deepEqual(schema, {
-        title: { type: "string", optional: false },
-        count: { type: "number", optional: false },
-        visible: { type: "boolean", optional: false },
+        title: { type: "string" },
+        count: { type: "number" },
+        visible: { type: "boolean" },
     })
 })
 
@@ -28,13 +28,13 @@ type CardProps = {
 `
     const schema = extractPropsSchema(source, "CardProps")
     assert.deepEqual(schema, {
-        title: { type: "string", optional: false },
-        count: { type: "number", optional: false },
+        title: { type: "string" },
+        count: { type: "number" },
     })
 })
 
 // オプショナルプロパティ
-test("オプショナルプロパティを optional: true として抽出する", () => {
+test("オプショナルプロパティも正しく抽出する", () => {
     const source = `
 interface CardProps {
     title: string;
@@ -43,8 +43,8 @@ interface CardProps {
 `
     const schema = extractPropsSchema(source, "CardProps")
     assert.deepEqual(schema, {
-        title: { type: "string", optional: false },
-        count: { type: "number", optional: true },
+        title: { type: "string" },
+        count: { type: "number" },
     })
 })
 
@@ -57,7 +57,7 @@ interface ButtonProps {
 `
     const schema = extractPropsSchema(source, "ButtonProps")
     assert.deepEqual(schema, {
-        variant: { type: "string", optional: false },
+        variant: { type: "string" },
     })
 })
 
@@ -71,8 +71,8 @@ interface ListProps {
 `
     const schema = extractPropsSchema(source, "ListProps")
     assert.deepEqual(schema, {
-        items: { type: "unknown", optional: false },
-        data: { type: "unknown", optional: false },
+        items: { type: "unknown" },
+        data: { type: "unknown" },
     })
 })
 
@@ -95,9 +95,9 @@ export class Counter extends LitElement {
 `
     const schema = extractPropsSchema(source, "CounterProps")
     assert.deepEqual(schema, {
-        count: { type: "number", optional: true },
-        label: { type: "string", optional: true },
-        active: { type: "boolean", optional: true },
+        count: { type: "number" },
+        label: { type: "string" },
+        active: { type: "boolean" },
     })
 })
 
@@ -116,7 +116,7 @@ export class Counter extends LitElement {
 `
     const schema = extractPropsSchema(source, "CounterProps")
     assert.deepEqual(schema, {
-        count: { type: "number", optional: false },
+        count: { type: "number" },
     })
 })
 
@@ -130,7 +130,7 @@ interface WrapperProps {
 `
     const schema = extractPropsSchema(source, "WrapperProps")
     assert.deepEqual(schema, {
-        children: { type: "string", optional: false },
-        title: { type: "string", optional: false },
+        children: { type: "string" },
+        title: { type: "string" },
     })
 })

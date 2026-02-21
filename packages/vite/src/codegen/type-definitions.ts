@@ -6,8 +6,7 @@ function generatePropsInterface(component: ComponentInfo): string {
     lines.push(`  interface ${component.tagName}Props {`)
 
     for (const [key, def] of Object.entries(component.propsSchema)) {
-        const optionalMark = def.optional ? "?" : ""
-        lines.push(`    ${key}${optionalMark}: ${def.type};`)
+        lines.push(`    ${key}: ${def.type};`)
     }
 
     lines.push("  }")

@@ -29,8 +29,7 @@ describe("renderMdoc", () => {
                 },
                 propsSchemas: {
                     Callout: {
-                        type: { type: "string", optional: false },
-                        children: { type: "string", optional: true },
+                        type: { type: "string" },
                     },
                 },
             },
@@ -52,8 +51,7 @@ describe("renderMdoc", () => {
                 },
                 propsSchemas: {
                     Counter: {
-                        count: { type: "number", optional: false },
-                        children: { type: "string", optional: true },
+                        count: { type: "number" },
                     },
                 },
             },
@@ -82,14 +80,13 @@ describe("renderMdoc", () => {
                 },
                 propsSchemas: {
                     Callout: {
-                        type: { type: "string", optional: false },
-                        children: { type: "string", optional: true },
+                        type: { type: "string" },
                     },
                 },
                 denyPatterns: ["class", "id"],
             },
         )
-        assert.include(result.html, 'data-props="children,type"')
+        assert.include(result.html, 'data-props="type"')
         assert.notInclude(result.html, "foo")
         assert.notInclude(result.html, "bar")
     })
@@ -105,8 +102,7 @@ describe("renderMdoc", () => {
                 },
                 propsSchemas: {
                     Callout: {
-                        type: { type: "string", optional: false },
-                        children: { type: "string", optional: true },
+                        type: { type: "string" },
                     },
                 },
                 hydrateComponents: new Map([["Callout", "eager"]]),
@@ -114,5 +110,30 @@ describe("renderMdoc", () => {
         )
         assert.include(result.html, "callout")
         assert.equal(result.hasIslands, true)
+    })
+
+    test("children はスキーマ宣言に関わらず第2引数として渡される", async () => {
+        const source = '{% Wrapper title="hello" %}child content{% /Wrapper %}'
+        const result = await renderMdoc(
+            source,
+            {},
+            {
+                components: {
+                    Wrapper: (props, children) => {
+                        return `<div title="${props.title}" has-children-prop="${"children" in props}">${children}</div>`
+                    },
+                },
+                propsSchemas: {
+                    Wrapper: {
+                        title: { type: "string" },
+                        children: { type: "string" },
+                    },
+                },
+            },
+        )
+        // children は props に含まれない（markdecl attributes から除外される）
+        assert.include(result.html, 'has-children-prop="false"')
+        // children は第2引数として渡される
+        assert.include(result.html, "child content")
     })
 })

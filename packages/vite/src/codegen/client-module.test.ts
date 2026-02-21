@@ -10,7 +10,7 @@ test("island コンポーネントからクライアント仮想モジュール�
             tagName: "Counter",
             hydrateMode: "eager",
             customElementTagName: "ph-counter",
-            propsSchema: { count: { type: "number", optional: false } },
+            propsSchema: { count: { type: "number" } },
         },
     ]
 
@@ -73,7 +73,7 @@ test("lazy island は observeLazyIslands + dynamic import で生成される", (
             tagName: "Slider",
             hydrateMode: "lazy",
             customElementTagName: "ph-slider",
-            propsSchema: { index: { type: "number", optional: false } },
+            propsSchema: { index: { type: "number" } },
         },
     ]
 
@@ -126,7 +126,7 @@ test("client-only island は即座 import で生成される", () => {
             tagName: "BrowserInfo",
             hydrateMode: "client-only",
             customElementTagName: "ph-browser-info",
-            propsSchema: { ua: { type: "string", optional: false } },
+            propsSchema: { ua: { type: "string" } },
         },
     ]
 

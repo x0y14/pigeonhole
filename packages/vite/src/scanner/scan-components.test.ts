@@ -40,7 +40,7 @@ export function Card(props: CardProps, children: string): string {
         assert.equal(results[0].tagName, "Card")
         assert.equal(results[0].hydrateMode, "none")
         assert.isNull(results[0].customElementTagName)
-        assert.deepEqual(results[0].propsSchema, { title: { type: "string", optional: false } })
+        assert.deepEqual(results[0].propsSchema, { title: { type: "string" } })
     } finally {
         rmSync(root, { recursive: true, force: true })
     }

@@ -1,6 +1,6 @@
 import { transformMarkdoc } from "@pigeonhole/markdoc"
 import { type Config } from "markdecl"
-import { renderToHtml } from "@pigeonhole/render"
+import { renderToHtml, matchesDenyPattern } from "@pigeonhole/render"
 import type { RenderOptions } from "@pigeonhole/render"
 import type { RenderMdocOptions, RenderPageResult } from "./types"
 
@@ -38,18 +38,21 @@ export async function renderMdoc(
             if (schema) {
                 for (const [key, def] of Object.entries(schema)) {
                     if (key !== "children") {
-                        attributes[key] = { type: MARKDOC_TYPE_MAP[def.type] ?? String }
+                        if (matchesDenyPattern(key, options.denyPatterns ?? [])) {
+                            attributes[key] = {
+                                type: MARKDOC_TYPE_MAP[def.type] ?? String,
+                                render: false,
+                            }
+                        } else {
+                            attributes[key] = { type: MARKDOC_TYPE_MAP[def.type] ?? String }
+                        }
                     }
                 }
             }
-            // 単純な deny パターン（ワイルドカードなし）を render: false として注入する。
-            // Markdoc の attributes 定義は具体的な属性名を要求するため、
-            // ワイルドカードパターン（例: "on*"）はここでは定義できない。
-            // ワイルドカードを含むパターンは Render 層（props-filter.ts の
-            // matchesDenyPattern）で包括的にチェックされる。
+            // 非ワイルドカード deny: スキーマ未宣言でも markdecl に通知（現状維持）
             if (options.denyPatterns) {
                 for (const pattern of options.denyPatterns) {
-                    if (!pattern.includes("*")) {
+                    if (!pattern.includes("*") && !(pattern in attributes)) {
                         attributes[pattern] = { type: String, render: false }
                     }
                 }
@@ -61,9 +64,6 @@ export async function renderMdoc(
 
     const renderOptions: RenderOptions = {
         components: options.components,
-        propsSchemas: options.propsSchemas,
-        authorAttrsMap: options.authorAttrsMap,
-        denyPatterns: options.denyPatterns,
         hydrateComponents: options.hydrateComponents,
         islandTagNames: options.islandTagNames,
     }

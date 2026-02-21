@@ -80,7 +80,6 @@ test("renderToHtml: コンポーネントを SSR のみで描画する", async (
         components: {
             Counter: (props, children) => `<my-counter>${children}</my-counter>`,
         },
-        propsSchemas: { Counter: { count: { type: "number", optional: false } } },
     }
     const result = await renderToHtml(tag("Counter", { count: 5 }, ["click me"]), options)
     assert.equal(result.html, "<my-counter>click me</my-counter>")
@@ -92,7 +91,6 @@ test("renderToHtml: hydrateComponents が空なら island markers を付けな�
         components: {
             Counter: () => "<span>0</span>",
         },
-        propsSchemas: { Counter: {} },
         hydrateComponents: new Map(),
     }
     const result = await renderToHtml(tag("Counter", {}), options)
@@ -107,7 +105,6 @@ test("renderToHtml: hydrateComponents に含まれるコンポーネントに is
         components: {
             Counter: () => "<span>0</span>",
         },
-        propsSchemas: { Counter: { count: { type: "number", optional: false } } },
         hydrateComponents: new Map([["Counter", "eager"]]),
     }
     const result = await renderToHtml(tag("Counter", { count: 0 }), options)
@@ -122,7 +119,6 @@ test("renderToHtml: hydrateComponents + islandTagNames でカスタム要素名�
         components: {
             Counter: () => "<span>0</span>",
         },
-        propsSchemas: { Counter: { count: { type: "number", optional: false } } },
         hydrateComponents: new Map([["Counter", "eager"]]),
         islandTagNames: { Counter: "my-counter" },
     }
@@ -138,7 +134,6 @@ test("renderToHtml: hydrateComponents に含まれないコンポーネントは
         components: {
             Header: () => "<header>Header</header>",
         },
-        propsSchemas: { Header: {} },
         hydrateComponents: new Map(),
     }
     const result = await renderToHtml(tag("Header", {}), options)
@@ -154,7 +149,6 @@ test("renderToHtml: hydrateComponents 未指定は SSR のみ", async () => {
         components: {
             Counter: () => "<span>0</span>",
         },
-        propsSchemas: { Counter: {} },
     }
     const result = await renderToHtml(tag("Counter", {}), options)
     assert.notInclude(result.html, "data-ph-island-id")
@@ -168,7 +162,6 @@ test("renderToHtml: hydrateComponents に lazy で含まれるコンポーネン
         components: {
             Slider: () => "<span>slide</span>",
         },
-        propsSchemas: { Slider: { index: { type: "number", optional: false } } },
         hydrateComponents: new Map([["Slider", "lazy"]]),
     }
     const result = await renderToHtml(tag("Slider", { index: 0 }), options)
@@ -182,7 +175,6 @@ test("renderToHtml: eager コンポーネントには data-ph-hydrate が付か�
         components: {
             Counter: () => "<span>0</span>",
         },
-        propsSchemas: { Counter: { count: { type: "number", optional: false } } },
         hydrateComponents: new Map([["Counter", "eager"]]),
     }
     const result = await renderToHtml(tag("Counter", { count: 0 }), options)
@@ -198,7 +190,6 @@ test("renderToHtml: client-only コンポーネントは SSR コンテンツな�
         components: {
             BrowserInfo: () => "<span>should not appear</span>",
         },
-        propsSchemas: { BrowserInfo: { ua: { type: "string", optional: false } } },
         hydrateComponents: new Map([["BrowserInfo", "client-only"]]),
         islandTagNames: { BrowserInfo: "ph-browser-info" },
     }
@@ -221,7 +212,6 @@ test("renderToHtml: client-only コンポーネントはカスタム要素タグ
         components: {
             BrowserInfo: () => "<span>ssr</span>",
         },
-        propsSchemas: { BrowserInfo: {} },
         hydrateComponents: new Map([["BrowserInfo", "client-only"]]),
         islandTagNames: { BrowserInfo: "ph-browser-info" },
     }
@@ -230,9 +220,9 @@ test("renderToHtml: client-only コンポーネントはカスタム要素タグ
     assert.include(result.html, "</ph-browser-info>")
 })
 
-// --- filterProps 統合 ---
+// --- 属性パススルー ---
 
-test("renderToHtml: filterProps でスキーマ外の属性を除外する", async () => {
+test("renderToHtml: コンポーネントに属性をそのまま渡す", async () => {
     let receivedProps: Record<string, unknown> = {}
     const options: RenderOptions = {
         components: {
@@ -241,11 +231,10 @@ test("renderToHtml: filterProps でスキーマ外の属性を除外する", asy
                 return "<div></div>"
             },
         },
-        propsSchemas: { Comp: { title: { type: "string", optional: false } } },
     }
-    await renderToHtml(tag("Comp", { title: "hello", extra: "removed" }), options)
+    await renderToHtml(tag("Comp", { title: "hello", count: 5 }), options)
     assert.equal(receivedProps.title, "hello")
-    assert.notProperty(receivedProps, "extra")
+    assert.equal(receivedProps.count, 5)
 })
 
 // --- 非同期コンポーネント ---
@@ -257,7 +246,6 @@ test("renderToHtml: 非同期コンポーネントを処理する", async () => 
                 return "<p>async result</p>"
             },
         },
-        propsSchemas: { AsyncComp: {} },
     }
     const result = await renderToHtml(tag("AsyncComp", {}), options)
     assert.equal(result.html, "<p>async result</p>")

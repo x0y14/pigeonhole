@@ -51,7 +51,7 @@ function extractLitPropertySchema(source: string): PropsSchema {
     while (match !== null) {
         const [, litType, name] = match
         const type = litType ? (LIT_TYPE_MAP[litType] ?? "unknown") : "string"
-        schema[name] = { type, optional: true }
+        schema[name] = { type }
         match = propertyRegex.exec(source)
     }
 
@@ -75,8 +75,8 @@ export function extractPropsSchema(source: string, interfaceName: string): Props
         const propertyRegex = /(\w+)(\??):\s*([^;]+)/g
         let propertyMatch = propertyRegex.exec(body)
         while (propertyMatch !== null) {
-            const [, name, optional, rawType] = propertyMatch
-            schema[name] = { type: classifyType(rawType), optional: optional === "?" }
+            const [, name, , rawType] = propertyMatch
+            schema[name] = { type: classifyType(rawType) }
             propertyMatch = propertyRegex.exec(body)
         }
 

@@ -1,7 +1,6 @@
 import { Tag } from "markdecl"
 import type { RenderableTreeNode } from "markdecl"
 
-import { filterProps } from "../props/index"
 import { createRenderContext, generateIslandId, wrapIslandHtml } from "../island/island-marker"
 import type { RenderContext } from "../island/island-marker"
 import { escapeHtml } from "./escape"
@@ -93,17 +92,6 @@ async function renderTag(
     if (component) {
         const childrenHtml = await renderChildren(children, options, context, renderCtx)
 
-        // props schema に基づく allow-list フィルタ（未提供時は空 schema＝全属性拒否）
-        const effectiveSchema = options.propsSchemas?.[name] ?? {}
-        const authorAttrs = options.authorAttrsMap?.[name] ?? new Set()
-        const sanitized = filterProps({
-            attrs: attributes,
-            schema: effectiveSchema,
-            authorAttrs,
-            denyPatterns: options.denyPatterns ?? [],
-            renderedChildren: childrenHtml,
-        })
-
         const hydrateMode = options.hydrateComponents?.get(name)
 
         if (hydrateMode === "client-only") {
@@ -111,20 +99,17 @@ async function renderTag(
             context.hasIslands = true
             const islandId = generateIslandId(renderCtx)
             const ceTagName = options.islandTagNames?.[name] ?? name
-            return wrapIslandHtml(islandId, ceTagName, "", sanitized, hydrateMode)
+            return wrapIslandHtml(islandId, ceTagName, "", attributes, hydrateMode)
         }
 
-        const componentHtml = await component(
-            sanitized,
-            (sanitized.children as string) ?? childrenHtml,
-        )
+        const componentHtml = await component(attributes, childrenHtml)
 
         if (hydrateMode) {
             // eager/lazy: SSR + hydration markers
             context.hasIslands = true
             const islandId = generateIslandId(renderCtx)
             const ceTagName = options.islandTagNames?.[name] ?? name
-            return wrapIslandHtml(islandId, ceTagName, componentHtml, sanitized, hydrateMode)
+            return wrapIslandHtml(islandId, ceTagName, componentHtml, attributes, hydrateMode)
         }
 
         // none (default): SSR only
