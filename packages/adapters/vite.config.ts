@@ -1,4 +1,3 @@
-import { builtinModules } from "node:module"
 import { resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { defineConfig } from "vite"
@@ -6,27 +5,15 @@ import dts from "vite-plugin-dts"
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url))
 
-const nodeBuiltins = builtinModules.flatMap((m) => [m, `node:${m}`])
-
 export default defineConfig({
     build: {
         lib: {
-            entry: resolve(__dirname, "src/index.ts"),
+            entry: resolve(__dirname, "src/hono/index.ts"),
             formats: ["es"],
         },
         outDir: "dist",
         rollupOptions: {
-            external: [
-                ...nodeBuiltins,
-                /^@pigeonhole\//,
-                /^@markdoc\//,
-                "vite",
-                "jiti",
-                "tinyglobby",
-                "zod",
-                "ajv",
-                "custom-elements-manifest",
-            ],
+            external: [/^@pigeonhole\//, "hono"],
             output: {
                 preserveModules: true,
                 preserveModulesRoot: "src",

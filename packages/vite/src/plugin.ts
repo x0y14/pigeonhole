@@ -1,17 +1,24 @@
 // Vite Plugin 本体
 
 import { mkdirSync, writeFileSync } from "node:fs"
-import { basename, join } from "node:path"
+import { join } from "node:path"
 import type { Plugin } from "vite"
-import type { PropsSchema } from "@pigeonhole/render"
+import type { PropsSchema } from "@pigeonhole/contracts"
 import { loadConfig } from "./config/load-config"
-import { scanComponents } from "./scanner/scan-components"
-import { scanMdocFiles } from "./scanner/scan-mdoc-files"
-import type { ComponentInfo } from "./scanner/types"
+import type { ComponentInfo } from "./component/types"
+import { collectMdocFiles } from "./mdoc/collect-mdoc-files"
 import { generateServerModule } from "./codegen/server-module"
 import { generateClientModule } from "./codegen/client-module"
 import { generateTypeDefinitions, generateVirtualModuleTypes } from "./codegen/type-definitions"
 import { validateMdocFiles } from "./validation/validate-mdoc-files"
+import { loadCemRegistry } from "./registry/load-cem"
+import { normalizeCemManifest } from "./registry/normalize-cem"
+import {
+    componentContractToComponentInfo,
+    componentContractToPropsSchema,
+    type ComponentContract,
+} from "./registry/types"
+import { validateCemManifest } from "./registry/validate-cem"
 
 // 仮想モジュール ID
 const VIRTUAL_COMPONENTS = "virtual:pigeonhole/components"
@@ -37,7 +44,7 @@ function registerTagName(
 // Pigeonhole Vite プラグインを作成する
 export function pigeonhole(): Plugin {
     let root: string
-    let scannedComponents: ComponentInfo[] = []
+    let generatedComponents: ComponentInfo[] = []
 
     return {
         name: "pigeonhole",
@@ -49,48 +56,60 @@ export function pigeonhole(): Plugin {
         async buildStart() {
             const config = await loadConfig(root)
             const denyPatterns = config.denyPatterns
+            const knownPackageImports = new Set<string>()
 
-            // コンポーネントスキャン
-            scannedComponents = await scanComponents(root, config.componentsDir)
+            const contractsByComponentName = new Map<string, ComponentContract>()
+            for (const registry of config.componentRegistries) {
+                const loaded = await loadCemRegistry(root, registry)
+                validateCemManifest(loaded.manifest, loaded.sourceId)
+                const normalized = normalizeCemManifest(loaded.manifest, {
+                    sourceId: loaded.sourceId,
+                    manifestPath: loaded.manifestPath,
+                    registryKind: loaded.kind,
+                    packageName: loaded.packageName,
+                })
 
-            // .mdoc ファイルスキャン
-            const mdocPages = await scanMdocFiles(root, config.pagesDir)
-            const mdocComponents = await scanMdocFiles(root, config.componentsDir)
+                for (const [name, contract] of normalized.byComponentName) {
+                    const existing = contractsByComponentName.get(name)
+                    if (existing) {
+                        throw new Error(
+                            `component name collision for "${name}": defined in both "${existing.source}" and "${contract.source}"`,
+                        )
+                    }
+                    contractsByComponentName.set(name, contract)
+                }
 
-            // タグ名衝突検知マップ
+                if (loaded.packageName) {
+                    knownPackageImports.add(loaded.packageName)
+                }
+            }
+
+            const componentSchemaMap = new Map<string, PropsSchema>()
+            const componentContractMap = new Map<string, ComponentContract>()
             const tagNameSourceMap = new Map<string, string>()
 
-            // コンポーネント名 → PropsSchema マップ
-            const componentSchemaMap = new Map<string, PropsSchema>()
-            for (const component of scannedComponents) {
-                registerTagName(tagNameSourceMap, component.tagName, component.filePath)
-                componentSchemaMap.set(component.tagName, component.propsSchema)
+            generatedComponents = []
+            for (const [componentName, contract] of contractsByComponentName) {
+                registerTagName(tagNameSourceMap, componentName, contract.source)
+                componentContractMap.set(componentName, contract)
+                componentSchemaMap.set(componentName, componentContractToPropsSchema(contract))
+                generatedComponents.push(componentContractToComponentInfo(contract))
             }
 
-            // .mdoc コンポーネントの input から PropsSchema を構築
-            for (const mdocComponent of mdocComponents) {
-                const fileName = basename(mdocComponent.filePath)
-                const tagName = fileName.replace(".mdoc", "")
+            generatedComponents.sort((a, b) => a.tagName.localeCompare(b.tagName))
 
-                registerTagName(tagNameSourceMap, tagName, mdocComponent.filePath)
-
-                const schema: PropsSchema = {}
-                for (const input of mdocComponent.inputs) {
-                    schema[input.variableName] = { type: "string" }
-                }
-                componentSchemaMap.set(tagName, schema)
-            }
-
-            // import 解決 + 属性検証
-            validateMdocFiles(mdocPages, root, componentSchemaMap, denyPatterns)
-            validateMdocFiles(mdocComponents, root, componentSchemaMap, denyPatterns)
+            const mdocPages = await collectMdocFiles(root, config.pagesDir)
+            validateMdocFiles(mdocPages, root, componentSchemaMap, denyPatterns, {
+                knownPackageImports,
+                componentContracts: componentContractMap,
+                strictComplexTypes: config.strictComplexTypes,
+            })
 
             // .pigeonhole/ 生成
             const outDir = join(root, ".pigeonhole")
             mkdirSync(outDir, { recursive: true })
-            writeFileSync(join(outDir, "types.d.ts"), generateTypeDefinitions(scannedComponents))
+            writeFileSync(join(outDir, "types.d.ts"), generateTypeDefinitions(generatedComponents))
             writeFileSync(join(outDir, "virtual-modules.d.ts"), generateVirtualModuleTypes())
-            // クライアントエントリポイント: Vite がモジュールリクエストとして処理し virtual module を解決する
             writeFileSync(join(outDir, "client-entry.js"), 'import "virtual:pigeonhole/client";\n')
         },
 
@@ -106,16 +125,19 @@ export function pigeonhole(): Plugin {
 
         load(id) {
             if (id === RESOLVED_VIRTUAL_COMPONENTS) {
-                if (scannedComponents.length > 0) {
-                    return generateServerModule(scannedComponents)
+                if (generatedComponents.length > 0) {
+                    return generateServerModule(generatedComponents)
                 }
-                return "export const components = {};"
+                return [
+                    "export const components = {};",
+                    "export const propsSchemas = {};",
+                    "export const hydrateComponents = new Map();",
+                    "export const islandTagNames = {};",
+                ].join("\n")
             }
             if (id === RESOLVED_VIRTUAL_CLIENT) {
-                if (scannedComponents.length > 0) {
-                    const islands = scannedComponents.filter(
-                        (component) => component.hydrateMode !== "none",
-                    )
+                if (generatedComponents.length > 0) {
+                    const islands = generatedComponents.filter((component) => component.hydrateMode !== "none")
                     return generateClientModule(islands)
                 }
                 return [
