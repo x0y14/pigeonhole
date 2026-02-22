@@ -2,9 +2,6 @@
     "name": "example-sns",
     "private": true,
     "scripts": {
-        "dev": "pnpm -C . --filter ./backend run dev",
-        "typecheck": "pnpm -C . -r --if-present run typecheck",
-        "test": "pnpm -C . -r --if-present run test",
-        "build": "pnpm -C . -r --if-present run build"
+        "dev": "pnpm --filter example-sns-backend run dev"
     }
 }
