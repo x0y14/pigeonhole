@@ -103,6 +103,13 @@ export function getPosts(limit: number, cursor?: string): { posts: Post[]; hasMo
     return { posts: slice.slice(0, limit), hasMore }
 }
 
+export function getPostsSortedByLikes(limit: number): Post[] {
+    const all = Array.from(posts.values())
+    return all
+        .sort((a, b) => getLikeCount(b.id) - getLikeCount(a.id))
+        .slice(0, limit)
+}
+
 export function findPostById(id: string): Post | undefined {
     return posts.get(id)
 }

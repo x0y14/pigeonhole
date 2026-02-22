@@ -13,6 +13,7 @@ import {
     getLikeCount,
     isLikedBy,
     findUserById,
+    getPostsSortedByLikes,
 } from "./store.js"
 import { authMiddleware, optionalAuthMiddleware } from "./middleware/auth.js"
 
@@ -85,14 +86,24 @@ app.delete("/api/sessions/current", authMiddleware, (c) => {
 app.get("/api/posts", optionalAuthMiddleware, (c) => {
     const userId = c.get("userId") as string | undefined
     const limitParam = c.req.query("limit")
+    const sort = c.req.query("sort")
     const cursor = c.req.query("cursor")
     const limit = limitParam
         ? Math.max(1, Math.min(100, Number(limitParam) || DEFAULT_LIMIT))
         : DEFAULT_LIMIT
 
-    const { posts, hasMore } = getPosts(limit, cursor)
+    let postsList: import("./store.js").Post[]
+    let hasMore = false
 
-    const data = posts.map((post) => {
+    if (sort === "popular") {
+        postsList = getPostsSortedByLikes(limit)
+    } else {
+        const result = getPosts(limit, cursor)
+        postsList = result.posts
+        hasMore = result.hasMore
+    }
+
+    const data = postsList.map((post) => {
         const author = findUserById(post.userId)
         return {
             id: post.id,
@@ -104,7 +115,7 @@ app.get("/api/posts", optionalAuthMiddleware, (c) => {
         }
     })
 
-    const nextCursor = hasMore && posts.length > 0 ? posts[posts.length - 1].id : null
+    const nextCursor = hasMore && postsList.length > 0 ? postsList[postsList.length - 1].id : null
     return c.json({ data, pagination: { nextCursor, hasMore } })
 })
 

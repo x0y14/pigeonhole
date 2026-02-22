@@ -59,7 +59,7 @@ export class SuggestedPosts extends LitElement {
         }
 
         try {
-            const res = await fetch("/api/posts?limit=5", { headers })
+            const res = await fetch("/api/posts?limit=5&sort=popular", { headers })
             if (!res.ok) {
                 this._error = "Failed to load suggestions."
                 return
@@ -68,7 +68,6 @@ export class SuggestedPosts extends LitElement {
             const data = await res.json()
             const posts = (data.data as ApiPost[])
                 .filter((post) => post.content.trim().length > 0)
-                .sort((a, b) => b.likes - a.likes)
                 .slice(0, 3)
 
             this._posts = posts
