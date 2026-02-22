@@ -63,6 +63,30 @@ importers:
 
   examples/sns: {}
 
+  examples/sns/backend:
+    dependencies:
+      '@hono/node-server':
+        specifier: ^1.19.9
+        version: 1.19.9(hono@4.12.0)
+      hono:
+        specifier: ^4.12.0
+        version: 4.12.0
+    devDependencies:
+      '@hono/vite-dev-server':
+        specifier: ^0.25.0
+        version: 0.25.0(hono@4.12.0)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^7.3.1
+        version: 7.3.1(@types/node@25.2.3)(jiti@2.6.1)
+      vitest:
+        specifier: ^4.0.18
+        version: 4.0.18(@types/node@25.2.3)(jiti@2.6.1)(jsdom@28.1.0)
+
+  examples/sns/frontend: {}
+
   packages/adapters:
     dependencies:
       '@pigeonhole/render':
