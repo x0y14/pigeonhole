@@ -5,6 +5,8 @@ node_modules
 dist
 test-results
 
+.codex
+.claude
 CLAUDE.md
 
 .pigeonhole
