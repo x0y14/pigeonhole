@@ -1,5 +1,7 @@
 import { LitElement, html } from "lit"
 import { customElement, state } from "lit/decorators.js"
+import { picoStyles } from "../styles/shared-styles.js"
+import { timelineStyles } from "../styles/sns-styles.js"
 
 interface PostData {
     id: string
@@ -13,6 +15,7 @@ interface PostData {
 @customElement("sns-timeline")
 export class Timeline extends LitElement {
     static hydrate = "eager"
+    static styles = [picoStyles, timelineStyles]
 
     @state() private _posts: PostData[] = []
     @state() private _loading = false

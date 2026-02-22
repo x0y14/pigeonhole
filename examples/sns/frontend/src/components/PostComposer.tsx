@@ -1,18 +1,24 @@
 import { LitElement, html } from "lit"
 import { customElement, state } from "lit/decorators.js"
+import { picoStyles } from "../styles/shared-styles.js"
+import { postComposerStyles } from "../styles/sns-styles.js"
+import "playful-avatars"
 
 const DRAFT_KEY = "sns:draft:post"
 
 @customElement("sns-post-composer")
 export class PostComposer extends LitElement {
     static hydrate = "eager"
+    static styles = [picoStyles, postComposerStyles]
 
     @state() private _content = ""
     @state() private _loading = false
     @state() private _loggedIn = false
+    @state() private _username = ""
 
     firstUpdated() {
         this._loggedIn = !!localStorage.getItem("token")
+        this._username = localStorage.getItem("username") ?? ""
         if (this._loggedIn) {
             this._content = localStorage.getItem(DRAFT_KEY) ?? ""
         }
@@ -23,15 +29,20 @@ export class PostComposer extends LitElement {
 
         return html`
             <form class="post-composer" @submit=${this._handleSubmit}>
-                <textarea
-                    placeholder="What's on your mind?"
-                    .value=${this._content}
-                    @input=${this._handleInput}
-                    required
-                ></textarea>
-                <button type="submit" ?disabled=${this._loading || !this._content.trim()}>
-                    ${this._loading ? "Posting..." : "Post"}
-                </button>
+                <div class="composer-avatar">
+                    <playful-avatar name=${this._username} variant="beam"></playful-avatar>
+                </div>
+                <div class="composer-body">
+                    <textarea
+                        placeholder="What's on your mind?"
+                        .value=${this._content}
+                        @input=${this._handleInput}
+                        required
+                    ></textarea>
+                    <button type="submit" ?disabled=${this._loading || !this._content.trim()}>
+                        ${this._loading ? "Posting..." : "Post"}
+                    </button>
+                </div>
             </form>
         `
     }

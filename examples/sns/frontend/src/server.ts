@@ -11,7 +11,13 @@ import signupPage from "./pages/signup.mdoc?raw"
 import timelinePage from "./pages/timeline.mdoc?raw"
 
 const app = new Hono()
-const render = createPageRenderer({ components, propsSchemas, hydrateComponents, islandTagNames })
+const render = createPageRenderer({
+    components,
+    propsSchemas,
+    hydrateComponents,
+    islandTagNames,
+    head: '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">',
+})
 
 // Pages
 app.get("/", async (c) => {

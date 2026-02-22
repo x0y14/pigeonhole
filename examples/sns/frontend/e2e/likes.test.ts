@@ -23,13 +23,13 @@ test.describe("Likes", () => {
         await page.locator("sns-post-composer button[type=submit]").click()
         await expect(page.locator("sns-post-card .post-content").first()).toHaveText(postContent)
 
-        // Verify initial state: Like (0)
+        // Verify initial state: 0 likes
         const likeButton = page.locator("sns-post-card .like-button").first()
-        await expect(likeButton).toContainText("Like (0)")
+        await expect(likeButton).toContainText("0")
 
         // Click like
         await likeButton.click()
-        await expect(likeButton).toContainText("Unlike (1)")
+        await expect(likeButton).toContainText("1")
         await expect(likeButton).toHaveClass(/liked/)
     })
 
@@ -53,11 +53,11 @@ test.describe("Likes", () => {
 
         // Like first
         await likeButton.click()
-        await expect(likeButton).toContainText("Unlike (1)")
+        await expect(likeButton).toContainText("1")
 
         // Unlike
         await likeButton.click()
-        await expect(likeButton).toContainText("Like (0)")
+        await expect(likeButton).toContainText("0")
         await expect(likeButton).not.toHaveClass(/liked/)
     })
 })

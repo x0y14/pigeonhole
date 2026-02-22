@@ -1,9 +1,13 @@
 import { LitElement, html } from "lit"
 import { customElement, state } from "lit/decorators.js"
+import { picoStyles } from "../styles/shared-styles.js"
+import { appHeaderStyles } from "../styles/sns-styles.js"
+import "playful-avatars"
 
 @customElement("sns-app-header")
 export class AppHeader extends LitElement {
     static hydrate = "eager"
+    static styles = [picoStyles, appHeaderStyles]
 
     @state() private _username = ""
 
@@ -17,7 +21,10 @@ export class AppHeader extends LitElement {
                 <a href="/" class="app-title">SNS</a>
                 ${this._username
                     ? html`
-                          <span class="current-user">${this._username}</span>
+                          <div class="user-info">
+                              <playful-avatar name=${this._username} variant="beam"></playful-avatar>
+                              <span class="current-user">${this._username}</span>
+                          </div>
                           <button class="logout-button" @click=${this._handleLogout}>Logout</button>
                       `
                     : html`<a href="/login">Login</a>`}

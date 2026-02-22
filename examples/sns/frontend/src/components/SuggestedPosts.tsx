@@ -1,5 +1,8 @@
 import { LitElement, html } from "lit"
 import { customElement, state } from "lit/decorators.js"
+import { picoStyles } from "../styles/shared-styles.js"
+import { suggestedPostsStyles } from "../styles/sns-styles.js"
+import "playful-avatars"
 
 type ApiPost = {
     id: string
@@ -11,6 +14,7 @@ type ApiPost = {
 @customElement("sns-suggested-posts")
 export class SuggestedPosts extends LitElement {
     static hydrate = "lazy"
+    static styles = [picoStyles, suggestedPostsStyles]
 
     @state() private _loading = false
     @state() private _error = ""
@@ -35,10 +39,17 @@ export class SuggestedPosts extends LitElement {
                                   ${this._posts.map(
                                       (post) => html`
                                           <li>
-                                              <p class="content">${post.content}</p>
-                                              <p class="meta">
-                                                  by ${post.username} - ${post.likes} likes
-                                              </p>
+                                              <div class="suggestion-row">
+                                                  <div class="suggestion-avatar">
+                                                      <playful-avatar name=${post.username} variant="beam"></playful-avatar>
+                                                  </div>
+                                                  <div>
+                                                      <p class="content">${post.content}</p>
+                                                      <p class="meta">
+                                                          by ${post.username} - ${post.likes} likes
+                                                      </p>
+                                                  </div>
+                                              </div>
                                           </li>
                                       `,
                                   )}

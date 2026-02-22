@@ -1,0 +1,38 @@
+body {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+sns-app-header {
+    grid-column: 1 / -1;
+}
+
+@media (min-width: 768px) {
+    body {
+        grid-template-columns: 2fr 1fr;
+    }
+
+    sns-app-header {
+        grid-column: 1 / -1;
+    }
+
+    sns-post-composer,
+    sns-timeline {
+        grid-column: 1;
+    }
+
+    sns-suggested-posts,
+    sns-client-status-panel {
+        grid-column: 2;
+        border-left: 1px solid var(--pico-muted-border-color);
+    }
+
+    sns-suggested-posts {
+        grid-row: 2 / 4;
+    }
+}

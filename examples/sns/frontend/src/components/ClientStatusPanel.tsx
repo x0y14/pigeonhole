@@ -1,9 +1,12 @@
 import { LitElement, html } from "lit"
 import { customElement, state } from "lit/decorators.js"
+import { picoStyles } from "../styles/shared-styles.js"
+import { clientStatusPanelStyles } from "../styles/sns-styles.js"
 
 @customElement("sns-client-status-panel")
 export class ClientStatusPanel extends LitElement {
     static hydrate = "client-only"
+    static styles = [picoStyles, clientStatusPanelStyles]
 
     @state() private _online = true
     @state() private _timezone = "unknown"
