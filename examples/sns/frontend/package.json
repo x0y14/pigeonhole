@@ -1,0 +1,7 @@
+{
+    "name": "example-sns-frontend",
+    "private": true,
+    "scripts": {
+        "typecheck": "echo frontend-not-implemented"
+    }
+}
