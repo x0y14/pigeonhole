@@ -135,8 +135,8 @@ importers:
         specifier: ^8.18.0
         version: 8.18.0
       custom-elements-manifest:
-        specifier: ^2.1.0
-        version: 2.1.0
+        specifier: ^1.0.0
+        version: 1.0.0
       jiti:
         specifier: ^2.6.1
         version: 2.6.1
@@ -1061,8 +1061,8 @@ packages:
     resolution: {integrity: sha512-IoJs7La+oFp/AB033wBStxNOJt4+9hHMxsXUPANcoXL2b3W4DZKghlJ2cI/eyeRZIQ9ysvYEorVhjrcYctWbog==}
     engines: {node: '>=20'}
 
-  custom-elements-manifest@2.1.0:
-    resolution: {integrity: sha512-4TU+YhBQpCGYWonsZVTOPx6aYJXenOiSRT7TNGvDB7ipa4SZSJKed1DYXG77XKL9JFZ86sDSDVkwgv1mqw3V3A==}
+  custom-elements-manifest@1.0.0:
+    resolution: {integrity: sha512-j59k0ExGCKA8T6Mzaq+7axc+KVHwpEphEERU7VZ99260npu/p/9kd+Db+I3cGKxHkM5y6q5gnlXn00mzRQkX2A==}
 
   data-uri-to-buffer@4.0.1:
     resolution: {integrity: sha512-0R9ikRb668HB7QDxT1vkpuUBtqc53YyAwMwGeUFKRojY/NWKvdZ+9UYtRfGmhqNbRkTSVpMbmyhXipFFv2cb/A==}
@@ -2362,7 +2362,7 @@ snapshots:
       css-tree: 3.1.0
       lru-cache: 11.2.6
 
-  custom-elements-manifest@2.1.0: {}
+  custom-elements-manifest@1.0.0: {}
 
   data-uri-to-buffer@4.0.1: {}
 

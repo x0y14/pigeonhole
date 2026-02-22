@@ -1,4 +1,4 @@
-import type { Context } from "hono"
+import type { Context, Env, Input } from "hono"
 import { renderMdoc, createDocument } from "@pigeonhole/render"
 import type { ServerComponent, PropsSchema } from "@pigeonhole/render"
 
@@ -7,11 +7,12 @@ export interface PageRendererOptions {
     propsSchemas?: Record<string, PropsSchema>
     hydrateComponents?: Map<string, "eager" | "lazy" | "client-only">
     islandTagNames?: Record<string, string>
+    head?: string
 }
 
 export function createPageRenderer(options: PageRendererOptions = {}) {
-    return async function render(
-        c: Context,
+    return async function render<E extends Env, P extends string, I extends Input>(
+        c: Context<E, P, I>,
         source: string,
         variables: Record<string, unknown> = {},
     ): Promise<Response> {
@@ -25,6 +26,7 @@ export function createPageRenderer(options: PageRendererOptions = {}) {
             createDocument({
                 body: result.html,
                 hasIslands: result.hasIslands,
+                head: options.head,
             }),
         )
     }

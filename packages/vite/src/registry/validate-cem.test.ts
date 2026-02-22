@@ -3,7 +3,7 @@ import { validateCemManifest } from "./validate-cem"
 
 test("有効な CEM は検証を通過する", () => {
     const manifest = {
-        schemaVersion: "2.1.0",
+        schemaVersion: "1.0.0",
         modules: [],
     }
 

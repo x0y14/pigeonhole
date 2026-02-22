@@ -1,6 +1,9 @@
 ---
 - import:
+    - "src/components/FormPageLayout.tsx"
     - "src/components/SignupForm.tsx"
 ---
 
-{% SignupForm /%}
+{% FormPageLayout %}
+  {% SignupForm /%}
+{% /FormPageLayout %}

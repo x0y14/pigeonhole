@@ -1,9 +1,12 @@
 import { LitElement, html } from "lit"
 import { customElement, state } from "lit/decorators.js"
+import { picoStyles } from "../styles/shared-styles.js"
+import { formPageStyles } from "../styles/sns-styles.js"
 
 @customElement("sns-login-form")
 export class LoginForm extends LitElement {
     static hydrate = "eager"
+    static styles = [picoStyles, formPageStyles]
 
     @state() private _error = ""
     @state() private _loading = false

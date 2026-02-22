@@ -20,7 +20,7 @@ test("file レジストリから CEM を読み込む", async () => {
         writeFileSync(
             cemPath,
             JSON.stringify({
-                schemaVersion: "2.1.0",
+                schemaVersion: "1.0.0",
                 modules: [],
             }),
         )
@@ -34,7 +34,7 @@ test("file レジストリから CEM を読み込む", async () => {
         assert.equal(result.manifestPath, cemPath)
         assert.equal(result.kind, "file")
         assert.deepEqual(result.manifest, {
-            schemaVersion: "2.1.0",
+            schemaVersion: "1.0.0",
             modules: [],
         })
     } finally {
