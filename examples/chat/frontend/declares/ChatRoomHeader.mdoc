@@ -1,12 +1,36 @@
 {% ChatRoomHeaderLayout %}
+  {% HeaderGroup role="primary" %}
+    {% Icon /%}
+    {% Title /%}
+    {% Desc /%}
+  {% /HeaderGroup %}
 
-    {% section %}
-    {% /section %}
+  {% HeaderGroup role="secondary" %}
+    {% Button /%}
+    {% HelpButton /%}
+    {% InfoButton /%}
+  {% /HeaderGroup %}
 
-    {% section %}
-    {% /section %}
+  {% HeaderGroup role="search" %}
+    {% SearchBar /%}
+  {% /HeaderGroup %}
 
-    {% section %}
-    {% /section %}
+{% /ChatRoomHeaderLayout %}
 
-{% /ChatRoomHeader %}
+
+
+
+
+{% ArticlePreview %}
+Look!! I found a Cute Bird!
+{% image ref="..." alt="a cute bird" /%}
+[Goto Article](https://...) {% .primary /%}
+{% /ArticlePreview %}
+
+{% GoogleAds /%}
+
+{% ArticlePreview %}
+Japan Travel VLog!
+{% image ref="..." alt="a tokyo tower & too many people" /%}
+[Goto Article](https://...) {% .primary /%}
+{% /ArticlePreview %}
